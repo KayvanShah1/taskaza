@@ -1,27 +1,31 @@
-from typing import Union
-
 from fastapi import FastAPI
-from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+from app.api.v1 import tasks, users
+from app.core import metadata
+from app.core.config import settings
 
+app = FastAPI(
+    title="Taskaza API",
+    version="1.0.0",
+    description=metadata.description,
+    summary=metadata.summary,
+    terms_of_service="https://github.com/kayvanshah1/taskaza/blob/main/LICENSE",
+    contact=metadata.contact,
+    license_info=metadata.license_info,
+    openapi_tags=metadata.tags_metadata,
+)
 
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: Union[bool, None] = None
+# Handle CORS protection
+origins = settings.BACKEND_CORS_ORIGINS
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
-
-
-@app.put("/items/{item_id}")
-def update_item(item_id: int, item: Item):
-    return {"item_name": item.name, "item_id": item_id}
+app.include_router(users.router, tags=["Users"])
+app.include_router(tasks.router, tags=["Tasks"])
