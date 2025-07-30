@@ -1,9 +1,9 @@
 services:
     # A Docker web service
     - type: web
-      name: taskaza
+      name: Taskaza
       runtime: python
       plan: free
       autoDeploy: false
       buildCommand: pip install -r requirements.txt
-      startCommand: fastapi dev app/main.py
+      startCommand: fastapi run app/main.py
