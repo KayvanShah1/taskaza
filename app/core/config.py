@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     if not os.path.exists("data"):
         os.makedirs("data")
 
-    SQLITE_DATABASE_URL: str = Field("sqlite:///./data/taskaza.db", description="Database connection URL")
+    SQLITE_DATABASE_URL: str = Field("sqlite+aiosqlite:///./data/taskaza.db", description="Database connection URL")
 
     # Configuration for Pydantic settings
     model_config = SettingsConfigDict(env_prefix="TSKZ_", env_file=".env", env_file_encoding="utf-8", extra="ignore")
