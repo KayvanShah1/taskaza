@@ -8,8 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.core.security import verify_password
 from app.crud.user import get_user_by_username
-from app.models import User
-from app.schemas import TokenData
+from app.models.user import User
+from app.schemas.token import TokenData
 
 # ---------------------------- #
 # JWT Token Management
