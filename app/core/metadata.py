@@ -23,6 +23,6 @@ license_info = {
 
 tags_metadata = [
     {"name": "Users", "description": "User registration and login routes"},
+    {"name": "Login", "description": "Authentication and token management routes"},
     {"name": "Tasks", "description": "CRUD operations for user tasks"},
-    {"name": "System", "description": "Health and internal checks"},
 ]
