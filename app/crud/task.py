@@ -1,4 +1,4 @@
-from app.models import Task
+from app.models.task import Task
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
