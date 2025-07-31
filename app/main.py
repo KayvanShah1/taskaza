@@ -1,19 +1,30 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1 import tasks, users
 from app.core import metadata
 from app.core.config import settings
+from app.db import Base, engine
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    Base.metadata.create_all(bind=engine)
+    yield
+
 
 app = FastAPI(
     title="Taskaza API",
     version="1.0.0",
-    description=metadata.description,
+    # description=metadata.description,
     summary=metadata.summary,
-    terms_of_service="https://github.com/kayvanshah1/taskaza/blob/main/LICENSE",
-    contact=metadata.contact,
-    license_info=metadata.license_info,
+    # terms_of_service="https://github.com/kayvanshah1/taskaza/blob/main/LICENSE",
+    # contact=metadata.contact,
+    # license_info=metadata.license_info,
     openapi_tags=metadata.tags_metadata,
+    lifespan=lifespan,
 )
 
 # Handle CORS protection
