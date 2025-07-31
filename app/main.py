@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1 import tasks, users, login
 from app.core import metadata
 from app.core.config import settings
-from app.db import Base, engine
+from app.db.session import Base, engine
 
 
 @asynccontextmanager
