@@ -1,19 +1,28 @@
+import os
 from typing import List
+
 from pydantic import AnyHttpUrl, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     # Secret keys and API keys
-    JWT_SECRET: str = Field("supersecret", description="JWT secret key")
+    JWT_SECRET_KEY_LENGTH: int = 32  # Length of the JWT secret key
+    JWT_SECRET_KEY: str = Field(description="JWT secret key", default=os.urandom(JWT_SECRET_KEY_LENGTH).hex())
     JWT_ALGORITHM: str = Field("HS256", description="JWT algorithm for signing tokens")
-    JWT_EXPIRATION_MINUTES: int = Field(60, description="JWT token expiration time in minutes")
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(60 * 24 * 3, description="JWT token expiration time in minutes")
     HTTP_API_KEY: str = Field("123456", description="HTTP API key for authentication")
 
     # CORS settings
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl | str] = Field(
         ["http://localhost:8000", "*"], description="List of allowed CORS origins for the backend"
     )
+
+    # Database settings
+    if not os.path.exists("data"):
+        os.makedirs("data")
+
+    SQLITE_DATABASE_URL: str = Field("sqlite:///./data/taskaza.db", description="Database connection URL")
 
     # Configuration for Pydantic settings
     model_config = SettingsConfigDict(env_prefix="TSKZ_", env_file=".env", env_file_encoding="utf-8", extra="ignore")
