@@ -1,0 +1,181 @@
+{
+	"info": {
+		"name": "Taskaza API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_postman_id": "taskaza-fastapi-collection"
+	},
+	"item": [
+		{
+			"name": "User Signup",
+			"request": {
+				"method": "POST",
+				"header": [
+					{ "key": "Content-Type", "value": "application/json" }
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"strongpassword\"\n}"
+				},
+				"url": {
+					"raw": "https://taskaza.onrender.com/signup",
+					"host": ["https://taskaza.onrender.com"],
+					"path": ["signup"]
+				}
+			}
+		},
+		{
+			"name": "User Login (Get Token)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{ "key": "username", "value": "testuser" },
+						{ "key": "password", "value": "strongpassword" }
+					]
+				},
+				"url": {
+					"raw": "https://taskaza.onrender.com/token",
+					"host": ["https://taskaza.onrender.com"],
+					"path": ["token"]
+				}
+			}
+		},
+		{
+			"name": "Create Task",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					},
+					{ "key": "X-API-Key", "value": "123456" },
+					{ "key": "Content-Type", "value": "application/json" }
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Test Task\",\n  \"description\": \"Task description\",\n  \"status\": \"pending\"\n}"
+				},
+				"url": {
+					"raw": "https://taskaza.onrender.com/tasks/",
+					"host": ["https://taskaza.onrender.com"],
+					"path": ["tasks", ""]
+				}
+			}
+		},
+		{
+			"name": "Get All Tasks",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					},
+					{ "key": "X-API-Key", "value": "123456" }
+				],
+				"url": {
+					"raw": "https://taskaza.onrender.com/tasks/",
+					"host": ["https://taskaza.onrender.com"],
+					"path": ["tasks", ""]
+				}
+			}
+		},
+		{
+			"name": "Get Task by ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					},
+					{ "key": "X-API-Key", "value": "123456" }
+				],
+				"url": {
+					"raw": "https://taskaza.onrender.com/tasks/1",
+					"host": ["https://taskaza.onrender.com"],
+					"path": ["tasks", "1"]
+				}
+			}
+		},
+		{
+			"name": "Patch Task Status",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					},
+					{ "key": "X-API-Key", "value": "123456" },
+					{ "key": "Content-Type", "value": "application/json" }
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"status\": \"completed\"\n}"
+				},
+				"url": {
+					"raw": "https://taskaza.onrender.com/tasks/1",
+					"host": ["https://taskaza.onrender.com"],
+					"path": ["tasks", "1"]
+				}
+			}
+		},
+		{
+			"name": "Put Task Full Update",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					},
+					{ "key": "X-API-Key", "value": "123456" },
+					{ "key": "Content-Type", "value": "application/json" }
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Updated Task\",\n  \"description\": \"New description\",\n  \"status\": \"completed\"\n}"
+				},
+				"url": {
+					"raw": "https://taskaza.onrender.com/tasks/1",
+					"host": ["https://taskaza.onrender.com"],
+					"path": ["tasks", "1"]
+				}
+			}
+		},
+		{
+			"name": "Delete Task",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{access_token}}"
+					},
+					{ "key": "X-API-Key", "value": "123456" }
+				],
+				"url": {
+					"raw": "https://taskaza.onrender.com/tasks/1",
+					"host": ["https://taskaza.onrender.com"],
+					"path": ["tasks", "1"]
+				}
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "access_token",
+			"value": "<your_token_here>",
+			"type": "string"
+		}
+	]
+}
