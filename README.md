@@ -27,7 +27,7 @@ All `/tasks/*` routes are protected using:
 
 You **must** send both headers:
 
-```html
+```xml
 Authorization: Bearer <access_token>
 X-API-Key: 123456
 ````
@@ -96,17 +96,26 @@ Includes:
 
 ## 🔐 Example Usage
 
-### ✅ Register a user
+> For all `/tasks/*` routes, include both:
+>
+> * `Authorization: Bearer <your_token>`
+> * `X-API-Key: 123456`
+
+### 🧑 User Endpoints
+
+#### ✅ Register a user
 
 ```http
 POST /signup
+Content-Type: application/json
+
 {
   "username": "testuser",
   "password": "strongpassword"
 }
 ```
 
-### ✅ Login
+#### ✅ Login and receive JWT token
 
 ```http
 POST /token
@@ -115,22 +124,110 @@ Content-Type: application/x-www-form-urlencoded
 username=testuser&password=strongpassword
 ```
 
-### ✅ Create Task
+*Response:*
+
+```json
+{
+  "access_token": "your.jwt.token",
+  "token_type": "bearer"
+}
+```
+
+### 📋 Task Endpoints
+
+#### ✅ Create Task
 
 ```http
 POST /tasks/
 Headers:
   Authorization: Bearer <your_token>
   X-API-Key: 123456
+Content-Type: application/json
 
 {
-  "title": "Test Task",
-  "description": "This is a test",
+  "title": "New Task",
+  "description": "Finish the assignment",
   "status": "pending"
 }
 ```
 
-#### LICENSE
+#### 📥 Get All Tasks
+
+```http
+GET /tasks/
+Headers:
+  Authorization: Bearer <your_token>
+  X-API-Key: 123456
+```
+
+#### 🔍 Get Task by ID
+
+```http
+GET /tasks/1
+Headers:
+  Authorization: Bearer <your_token>
+  X-API-Key: 123456
+```
+
+#### 🔄 Update Task Status
+
+```http
+PATCH /tasks/1
+Headers:
+  Authorization: Bearer <your_token>
+  X-API-Key: 123456
+Content-Type: application/json
+
+{
+  "status": "completed"
+}
+```
+
+#### 📝 Update Entire Task
+
+```http
+PUT /tasks/1
+Headers:
+  Authorization: Bearer <your_token>
+  X-API-Key: 123456
+Content-Type: application/json
+
+{
+  "title": "Updated Title",
+  "description": "Updated desc",
+  "status": "completed"
+}
+```
+
+#### ❌ Delete Task
+
+```http
+DELETE /tasks/1
+Headers:
+  Authorization: Bearer <your_token>
+  X-API-Key: 123456
+```
+
+*Response:*
+
+```
+204 No Content
+```
+
+## 📁 Tech Stack
+
+* FastAPI (async)
+* SQLite (local/test db)
+* SQLAlchemy 2.0 (async ORM)
+* Pydantic v2
+* JWT (OAuth2 password flow)
+* Passlib (bcrypt)
+* Pytest + httpx
+
+
+## 📜 License
+MIT © 2025 Kayvan Shah. All rights reserved.
+
 This repository is licensed under the `MIT` License. See the [LICENSE](LICENSE) file for details.
 
 #### Disclaimer
