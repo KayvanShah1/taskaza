@@ -5,10 +5,10 @@ from fastapi.security import APIKeyHeader, OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.auth import verify_access_token
-from app.crud.user import get_user_by_username
 from app.core.config import settings
-from app.db import async_session
-from app.models import User
+from app.crud.user import get_user_by_username
+from app.db.session import async_session
+from app.models.user import User
 
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
