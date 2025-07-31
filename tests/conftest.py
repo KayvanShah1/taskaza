@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.core.dependencies import get_db
-from app.db import Base
+from app.db.session import Base
 from app.main import app
 
 load_dotenv()
