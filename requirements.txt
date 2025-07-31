@@ -1,3 +1,5 @@
 fastapi[standard]
 pydantic-settings
+passlib[bcrypt]
+pyjwt
 SQLAlchemy
