@@ -2,8 +2,9 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 
-from app.api.v1 import tasks, users, login
+from app.api.v1 import login, tasks, users
 from app.core import metadata
 from app.core.config import settings
 from app.db.session import Base, engine
@@ -42,3 +43,8 @@ app.add_middleware(
 app.include_router(users.router, tags=["Users"])
 app.include_router(login.router, tags=["Login"])
 app.include_router(tasks.router, tags=["Tasks"])
+
+
+@app.get("/", include_in_schema=False)
+async def root():
+    return RedirectResponse(url="/docs")
