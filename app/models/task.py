@@ -4,24 +4,9 @@ from datetime import datetime, timezone
 from sqlalchemy import Column, DateTime, Enum, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from app.db import Base
+from app.db.session import Base
 
 
-# ---------------------------- #
-# User Schema
-# ---------------------------- #
-class User(Base):
-    __tablename__ = "users"
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
-
-    tasks = relationship("Task", back_populates="user", cascade="all, delete-orphan")
-
-
-# ---------------------------- #
-# Task Schema
-# ---------------------------- #
 class TaskStatus(str, enum.Enum):
     pending = "pending"
     completed = "completed"
