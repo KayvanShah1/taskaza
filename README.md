@@ -75,7 +75,25 @@ pip install -r requirements.txt
 pip install -r requirements.dev.txt
 ```
 
-### 3️⃣ Run the app locally
+### 3️⃣ Create a `.env` file
+
+```ini
+# .env
+
+# Secret key used to sign JWT tokens (generate one below)
+TSKZ_JWT_SECRET_KEY=your_generated_jwt_secret_key
+
+# API Key required for protected endpoints
+TSKZ_HTTP_API_KEY=123456
+```
+
+To generate a secure JWT secret key, run:
+
+```bash
+openssl rand -base64 32
+```
+
+### 4️⃣ Run the app locally without docker
 **Development server**
 ```bash
 fastapi dev app/main.py
@@ -85,6 +103,13 @@ fastapi dev app/main.py
 ```bash
 fastapi run app/main.py
 ```
+
+#### 🐳 Run using Docker Compose
+```bash
+docker-compose up --build
+```
+> Make sure your .env file is present in the root directory.
+App will be available at: http://localhost:8000/
 
 ## 🧪 Run Tests
 
