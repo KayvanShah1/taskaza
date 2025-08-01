@@ -244,6 +244,68 @@ Headers:
 204 No Content
 ```
 
+## Using `curl` to Interact with Taskaza
+
+You can test the live API from your terminal using simple `curl` commands.
+> Same can be used to test the local development server.
+
+### Register a new user
+
+```bash
+curl -X POST https://taskaza.onrender.com/signup \
+  -H "Content-Type: application/json" \
+  -d '{"username": "testuser", "password": "strongpassword"}'
+````
+
+### Login and get JWT token
+
+```bash
+curl -X POST https://taskaza.onrender.com/token \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "username=testuser&password=strongpassword"
+```
+
+> Save the `access_token` from the response for next steps.
+
+### Create a new task
+
+```bash
+curl -X POST https://taskaza.onrender.com/tasks/ \
+  -H "Authorization: Bearer <your_token>" \
+  -H "X-API-Key: 123456" \
+  -H "Content-Type: application/json" \
+  -d '{"title": "My Task", "description": "curl-based creation", "status": "pending"}'
+```
+
+### Get all tasks
+
+```bash
+curl -X GET https://taskaza.onrender.com/tasks/ \
+  -H "Authorization: Bearer <your_token>" \
+  -H "X-API-Key: 123456"
+```
+
+### Update task status
+
+```bash
+curl -X PATCH https://taskaza.onrender.com/tasks/1 \
+  -H "Authorization: Bearer <your_token>" \
+  -H "X-API-Key: 123456" \
+  -H "Content-Type: application/json" \
+  -d '{"status": "completed"}'
+```
+
+### Delete a task
+
+```bash
+curl -X DELETE https://taskaza.onrender.com/tasks/1 \
+  -H "Authorization: Bearer <your_token>" \
+  -H "X-API-Key: 123456"
+```
+
+> Replace `<your_token>` with your actual JWT access token.
+
+
 ## 📁 Tech Stack
 
 * FastAPI (async)
