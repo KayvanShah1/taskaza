@@ -12,6 +12,8 @@ Taskaza is a secure, async, full-stack API built with FastAPI. It supports user 
 - ✅ Async SQLAlchemy + SQLite
 - ✅ Pydantic validation, proper error handling
 
+[📊 View architecture diagram](docs/ARCHITECTURE.md)
+
 ## 🚀 Live Deployment
 
 🌐 **Live API URL:** [taskaza.onrender.com](https://taskaza.onrender.com)
