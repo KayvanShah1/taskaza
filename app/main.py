@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Taskaza API",
     version="1.0.0",
-    # description=metadata.description,
+    description=metadata.description,
     summary=metadata.summary,
     terms_of_service="https://github.com/kayvanshah1/taskaza/blob/main/LICENSE",
     # contact=metadata.contact,
