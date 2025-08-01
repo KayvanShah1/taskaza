@@ -334,9 +334,9 @@ curl -X DELETE https://taskaza.onrender.com/tasks/1 \
 
 
 ## 📜 License
-MIT © 2025 Kayvan Shah. All rights reserved.
+BSD-3-Clause © 2025 Kayvan Shah. All rights reserved.
 
-This repository is licensed under the `MIT` License. See the [LICENSE](LICENSE) file for details.
+This repository is licensed under the `BSD-3-Clause` License. See the [LICENSE](LICENSE) file for details.
 
 #### Disclaimer
 
