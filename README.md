@@ -1,4 +1,4 @@
-# 📝 Taskaza – FastAPI Task Management API
+# 📝 Taskaza – Task Management API
 
 ![🚀 Deploy & Test](https://github.com/kayvanshah1/taskaza/actions/workflows/deploy.yml/badge.svg)
 ![🌀 Keep Taskaza Alive](https://github.com/kayvanshah1/taskaza/actions/workflows/ping-taskaza.yml/badge.svg)
