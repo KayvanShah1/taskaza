@@ -1,7 +1,10 @@
 services:
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: kayvan999/taskaza:latest
+    container_name: taskaza-api
 
     # <port on localhost>:<port on container>
     ports: 
@@ -11,9 +14,13 @@ services:
     # with read only command for added security
     volumes:
       - ./:/usr/src/app:ro
+      - ./data:/usr/src/app/data
     
     # override the command to start the server with --reload
     command: fastapi run app/main.py
     
-    # remove qoutes from env variables
     env_file: .env
+
+networks:
+  taskaza-network:
+    driver: bridge
