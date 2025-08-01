@@ -3,6 +3,11 @@
 The **Taskaza** API is a secure, containerized task management system built with FastAPI, designed around clean separation of concerns, robust authentication, and cloud-native deployment.
 
 ```mermaid
+---
+config:
+  theme: neo-dark
+---
+
 graph TD
   A[Client: Postman / Browser] --> B[FastAPI App]
 
@@ -19,31 +24,31 @@ graph TD
   D1 --> E[Dependency Injection]
   D2 --> E
   D3 --> E
+  D4 --> E
 
   E --> F[Async SQLAlchemy Models]
   F --> G[SQLite DB data/taskaza.db]
 
   B --> H[.env Config Loader]
-  B --> I[Uvicorn Server]
-
-  %% runtime wrapper for FastAPI app
-  I --> J[Docker Container]
 
   subgraph CI/CD Pipeline
+    direction TB
+
     K[GitHub Actions]
+    K --> L1
 
     subgraph GitHub CI Jobs
-      K --> L1[Build + Test]
-      L1 --> L2[Build Docker Image]
-      L2 --> J
+      L1[Build + Test] --> L2[Build Docker Image]
       L2 --> L3[Push to Docker Hub]
       L3 --> L4[Deploy to Render]
     end
   end
 
   L4 --> M[Render Cloud Runtime]
-  M -->|Runs Container| J
+  M -->|Runs Container| J[Docker Container]
+  J --> I[Uvicorn Server]
   M -->|Reads/Writes| G
+
 ```
 
 ### ⚙️ Components
