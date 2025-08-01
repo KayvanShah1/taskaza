@@ -244,8 +244,10 @@ Headers:
 204 No Content
 ```
 
-## Using `curl` to Interact with Taskaza
+## Using Postman
+To use the API in **Postman**, open Postman, click **Import**, then select the [`docs/postman_collection.json`](docs/postman_collection.json) file to load all predefined requests.
 
+## Using `curl` to Interact with Taskaza
 You can test the live API from your terminal using simple `curl` commands.
 > Same can be used to test the local development server.
 
