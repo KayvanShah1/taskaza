@@ -1,0 +1,14 @@
+name: 🌀 Keep Taskaza Alive
+
+on:
+  schedule:
+    - cron: '*/14 * * * *'  # Every 14 minutes
+  workflow_dispatch:
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🌐 Curl Taskaza API
+        run: |
+          curl -sSf https://taskaza.onrender.com/docs || echo "API did not respond"
