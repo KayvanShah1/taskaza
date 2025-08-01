@@ -1,0 +1,19 @@
+services:
+  api:
+    build: .
+    image: kayvan999/taskaza:latest
+
+    # <port on localhost>:<port on container>
+    ports: 
+      - 8000:8000
+
+    # creating a bind mount to keep our container and dev env in sync
+    # with read only command for added security
+    volumes:
+      - ./:/usr/src/app:ro
+    
+    # override the command to start the server with --reload
+    command: fastapi run app/main.py
+    
+    # remove qoutes from env variables
+    env_file: .env
