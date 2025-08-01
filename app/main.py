@@ -22,9 +22,9 @@ app = FastAPI(
     version="1.0.0",
     # description=metadata.description,
     summary=metadata.summary,
-    # terms_of_service="https://github.com/kayvanshah1/taskaza/blob/main/LICENSE",
+    terms_of_service="https://github.com/kayvanshah1/taskaza/blob/main/LICENSE",
     # contact=metadata.contact,
-    # license_info=metadata.license_info,
+    license_info=metadata.license_info,
     openapi_tags=metadata.tags_metadata,
     lifespan=lifespan,
 )
