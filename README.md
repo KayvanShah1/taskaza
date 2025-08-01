@@ -255,7 +255,7 @@ You can test the live API from your terminal using simple `curl` commands.
 curl -X POST https://taskaza.onrender.com/signup \
   -H "Content-Type: application/json" \
   -d '{"username": "testuser", "password": "strongpassword"}'
-````
+```
 
 ### Login and get JWT token
 
@@ -294,6 +294,20 @@ curl -X PATCH https://taskaza.onrender.com/tasks/1 \
   -H "Content-Type: application/json" \
   -d '{"status": "completed"}'
 ```
+
+### Update an entire task
+
+```bash
+curl -X PUT https://taskaza.onrender.com/tasks/1 \
+  -H "Authorization: Bearer <your_token>" \
+  -H "X-API-Key: 123456" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Updated via curl",
+    "description": "Updated description from terminal",
+    "status": "completed"
+  }
+  ```
 
 ### Delete a task
 
