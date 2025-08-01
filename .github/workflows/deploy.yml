@@ -9,6 +9,8 @@ jobs:
   build-test:
     runs-on: ubuntu-latest
     name: Build and Test
+    env:
+      TSKZ_HTTP_API_KEY: ${{ secrets.TSKZ_HTTP_API_KEY }}
 
     steps:
       - name: Checkout repo
@@ -72,5 +74,5 @@ jobs:
           service_id: ${{ secrets.RENDER_SERVICE_ID }}
           api_key: ${{ secrets.RENDER_API_KEY }}
           github_deployment: true
-          deployment_environment: 'production'
+          deployment_environment: 'render'
           github_token: ${{ secrets.GITHUB_TOKEN }}
