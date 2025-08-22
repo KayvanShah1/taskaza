@@ -3,343 +3,225 @@
 ![🚀 Deploy & Test](https://github.com/kayvanshah1/taskaza/actions/workflows/deploy.yml/badge.svg)
 ![🌀 Keep Taskaza Alive](https://github.com/kayvanshah1/taskaza/actions/workflows/ping-taskaza.yml/badge.svg)
 
-Taskaza is a secure, async, full-stack API built with FastAPI. It supports user sign-up/login, JWT authentication, API key security, and CRUD operations for tasks.
+Taskaza is a secure, async API built with FastAPI. It supports user sign-up/login, JWT authentication, API key security, and CRUD operations for tasks.
 
 ## 📦 Features
-- ✅ User Registration (`/signup`)
-- ✅ OAuth2 Password Flow Login (`/token`)
-- ✅ JWT Authentication & Secure Password Hashing
-- ✅ API Key Header Required (`X-API-Key: 123456`)
-- ✅ Task CRUD (Create, Read, Update, Delete)
-- ✅ Protected Endpoints (JWT + API key required)
-- ✅ Async SQLAlchemy + SQLite
-- ✅ Pydantic validation, proper error handling
+
+* User registration (`/signup`) and login (`/token`, OAuth2 password flow)
+* JWT authentication + secure password hashing
+* API key header (`X-API-Key: 123456`) on protected routes
+* Task CRUD (create, list, get, update status/full, delete)
+* Async SQLAlchemy + SQLite, Pydantic v2 validation
+* Thorough tests (unit + full-flow)
 
 [📊 View architecture diagram](docs/ARCHITECTURE.md)
 
 ## 🚀 Live Deployment
 
-🌐 **Live API URL:** [taskaza.onrender.com](https://taskaza.onrender.com)
+* 🌐 API: **[https://taskaza.onrender.com](https://taskaza.onrender.com)**
+* 📚 Swagger: **[https://taskaza.onrender.com/docs](https://taskaza.onrender.com/docs)**
 
-📚 **Swagger UI:** [taskaza.onrender.com/docs](https://taskaza.onrender.com/docs)
+## 🔐 Authentication (Required for `/tasks/*`)
 
-## 🔐 Authentication
+Send **both** headers on protected routes:
 
-All `/tasks/*` routes are protected using:
-
-1. ✅ **JWT Bearer Token**
-2. ✅ **`X-API-Key: 123456`**
-
-You **must** send both headers:
-
-```xml
+```
 Authorization: Bearer <access_token>
 X-API-Key: 123456
-````
-
+```
 
 ## 📚 API Endpoints
 
-### 🧑 User Routes
+### Users
 
-| Method | Endpoint     | Description              |
-|--------|--------------|--------------------------|
-| POST   | `/signup`    | Register a new user      |
-| POST   | `/token`     | Login and get JWT token  |
+| Method | Endpoint  | Description             |
+| ------ | --------- | ----------------------- |
+| POST   | `/signup` | Register a new user     |
+| POST   | `/token`  | Login and get JWT token |
 
-### 📋 Task Routes (Protected)
+### Tasks (Protected)
 
-| Method | Endpoint        | Description                  |
-|--------|------------------|------------------------------|
-| POST   | `/tasks/`        | Create a task                |
-| GET    | `/tasks/`        | List all tasks (own user)    |
-| GET    | `/tasks/{id}`    | Get a specific task          |
-| PATCH  | `/tasks/{id}`    | Update task status only      |
-| PUT    | `/tasks/{id}`    | Update full task             |
-| DELETE | `/tasks/{id}`    | Delete a task                |
+| Method | Endpoint      | Description            |
+| ------ | ------------- | ---------------------- |
+| POST   | `/tasks/`     | Create a task          |
+| GET    | `/tasks/`     | List your tasks        |
+| GET    | `/tasks/{id}` | Get a task by ID       |
+| PATCH  | `/tasks/{id}` | Update **status** only |
+| PUT    | `/tasks/{id}` | Update **entire** task |
+| DELETE | `/tasks/{id}` | Delete a task          |
 
+---
 
-## 🛠 Project Setup
+## 🛠 Setup with `uv`
 
-### 1️⃣ Clone the repo
+> If you don’t have uv:
+> **macOS/Linux:**
+>
+> ```bash
+> curl -LsSf https://astral.sh/uv/install.sh | sh
+> ```
+>
+> **Windows:**
+>
+> ```powershell
+> winget install --id=astral-sh.uv  -e
+> ```
+
+### 1) Clone
 
 ```bash
 git clone https://github.com/KayvanShah1/taskaza.git
-cd taskaza
-````
-
-### 2️⃣ Install dependencies
-
-```bash
-pip install -r requirements.txt
-pip install -r requirements.dev.txt
+cd taskaza/backend
 ```
 
-### 3️⃣ Create a `.env` file
+### 2) Install dependencies
+
+```bash
+uv sync
+```
+
+> 💡 This will automatically create a `.venv/` and install everything from `pyproject.toml` (or lockfile).
+
+### 3) Environment variables
+
+Create a `.env` file:
 
 ```ini
-# .env
-
-# Secret key used to sign JWT tokens (generate one below)
 TSKZ_JWT_SECRET_KEY=your_generated_jwt_secret_key
-
-# API Key required for protected endpoints
 TSKZ_HTTP_API_KEY=123456
 ```
 
-To generate a secure JWT secret key, run:
+Generate a secure JWT secret key:
 
 ```bash
 openssl rand -base64 32
 ```
 
-### 4️⃣ Run the app locally without docker
-**Development server**
-```bash
-fastapi dev app/main.py
-```
+### 4) Run locally
 
-**Production server**
-```bash
-fastapi run app/main.py
-```
-
-#### 🐳 Run using Docker Compose
-```bash
-docker-compose up --build
-```
-> Make sure your .env file is present in the root directory.
-App will be available at: http://localhost:8000/
-
-## 🧪 Run Tests
+**Development:**
 
 ```bash
-pytest -v
+uv run fastapi dev app/main.py
 ```
 
-Includes:
-
-* ✅ Unit tests for each endpoint
-* 🔁 Full-flow integration tests
-* 🔐 Auth failure scenarios
-
-
-## 🔐 Example Usage
-
-> For all `/tasks/*` routes, include both:
->
-> * `Authorization: Bearer <your_token>`
-> * `X-API-Key: 123456`
-
-### 🧑 User Endpoints
-
-#### ✅ Register a user
-
-```http
-POST /signup
-Content-Type: application/json
-
-{
-  "username": "testuser",
-  "password": "strongpassword"
-}
-```
-
-#### ✅ Login and receive JWT token
-
-```http
-POST /token
-Content-Type: application/x-www-form-urlencoded
-
-username=testuser&password=strongpassword
-```
-
-*Response:*
-
-```json
-{
-  "access_token": "your.jwt.token",
-  "token_type": "bearer"
-}
-```
-
-### 📋 Task Endpoints
-
-#### ✅ Create Task
-
-```http
-POST /tasks/
-Headers:
-  Authorization: Bearer <your_token>
-  X-API-Key: 123456
-Content-Type: application/json
-
-{
-  "title": "New Task",
-  "description": "Finish the assignment",
-  "status": "pending"
-}
-```
-
-#### 📥 Get All Tasks
-
-```http
-GET /tasks/
-Headers:
-  Authorization: Bearer <your_token>
-  X-API-Key: 123456
-```
-
-#### 🔍 Get Task by ID
-
-```http
-GET /tasks/1
-Headers:
-  Authorization: Bearer <your_token>
-  X-API-Key: 123456
-```
-
-#### 🔄 Update Task Status
-
-```http
-PATCH /tasks/1
-Headers:
-  Authorization: Bearer <your_token>
-  X-API-Key: 123456
-Content-Type: application/json
-
-{
-  "status": "completed"
-}
-```
-
-#### 📝 Update Entire Task
-
-```http
-PUT /tasks/1
-Headers:
-  Authorization: Bearer <your_token>
-  X-API-Key: 123456
-Content-Type: application/json
-
-{
-  "title": "Updated Title",
-  "description": "Updated desc",
-  "status": "completed"
-}
-```
-
-#### ❌ Delete Task
-
-```http
-DELETE /tasks/1
-Headers:
-  Authorization: Bearer <your_token>
-  X-API-Key: 123456
-```
-
-*Response:*
-
-```
-204 No Content
-```
-
-## Using Postman
-To use the API in **Postman**, open Postman, click **Import**, then select the [`docs/postman_collection.json`](docs/postman_collection.json) file to load all predefined requests.
-
-## Using `curl` to Interact with Taskaza
-You can test the live API from your terminal using simple `curl` commands.
-> Same can be used to test the local development server.
-
-### Register a new user
+**Production:**
 
 ```bash
-curl -X POST https://taskaza.onrender.com/signup \
+uv run fastapi run app/main.py
+```
+
+### 5) Docker (optional)
+
+```bash
+docker compose up --build
+```
+
+App: [http://localhost:8000/](http://localhost:8000/)
+
+---
+
+## 🔁 Export pip-style requirements (for CI/Render)
+
+```bash
+# main (no dev)
+uv export --format=requirements-txt --no-hashes --output requirements.txt
+
+# dev (includes dev dependencies)
+uv export --format=requirements-txt --no-hashes --only-dev --output requirements-dev.txt
+```
+
+---
+
+## 🧪 Tests
+
+```bash
+uv run pytest -v
+```
+
+Covers unit tests, full-flow integration, and auth failures.
+
+
+## 🧰 Postman
+
+Open Postman → **Import** → select [`docs/postman_collection.json`](docs/postman_collection.json).
+All requests are preconfigured; just paste your JWT into the **Authorization** header and keep `X-API-Key: 123456`.
+
+
+## 🖥️ `curl` Quickstart
+
+Set a helper:
+
+```bash
+BASE_URL="https://taskaza.onrender.com"   # or http://localhost:8000
+```
+
+### Register
+
+```bash
+curl -X POST "$BASE_URL/signup" \
   -H "Content-Type: application/json" \
-  -d '{"username": "testuser", "password": "strongpassword"}'
+  -d '{"username":"testuser","password":"strongpassword"}'
 ```
 
-### Login and get JWT token
+### Login (get JWT)
 
 ```bash
-curl -X POST https://taskaza.onrender.com/token \
+TOKEN=$(curl -s -X POST "$BASE_URL/token" \
   -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=testuser&password=strongpassword"
+  -d "username=testuser&password=strongpassword" | jq -r .access_token)
 ```
 
-> Save the `access_token` from the response for next steps.
-
-### Create a new task
+### Create task
 
 ```bash
-curl -X POST https://taskaza.onrender.com/tasks/ \
-  -H "Authorization: Bearer <your_token>" \
+curl -X POST "$BASE_URL/tasks/" \
+  -H "Authorization: Bearer $TOKEN" \
   -H "X-API-Key: 123456" \
   -H "Content-Type: application/json" \
-  -d '{"title": "My Task", "description": "curl-based creation", "status": "pending"}'
+  -d '{"title":"My Task","description":"created via curl","status":"pending"}'
 ```
 
-### Get all tasks
+### List tasks
 
 ```bash
-curl -X GET https://taskaza.onrender.com/tasks/ \
-  -H "Authorization: Bearer <your_token>" \
+curl -X GET "$BASE_URL/tasks/" \
+  -H "Authorization: Bearer $TOKEN" \
   -H "X-API-Key: 123456"
 ```
 
-### Update task status
+### Update status
 
 ```bash
-curl -X PATCH https://taskaza.onrender.com/tasks/1 \
-  -H "Authorization: Bearer <your_token>" \
+curl -X PATCH "$BASE_URL/tasks/1" \
+  -H "Authorization: Bearer $TOKEN" \
   -H "X-API-Key: 123456" \
   -H "Content-Type: application/json" \
-  -d '{"status": "completed"}'
+  -d '{"status":"completed"}'
 ```
 
-### Update an entire task
+### Update entire task
 
 ```bash
-curl -X PUT https://taskaza.onrender.com/tasks/1 \
-  -H "Authorization: Bearer <your_token>" \
+curl -X PUT "$BASE_URL/tasks/1" \
+  -H "Authorization: Bearer $TOKEN" \
   -H "X-API-Key: 123456" \
   -H "Content-Type: application/json" \
-  -d '{
-    "title": "Updated via curl",
-    "description": "Updated description from terminal",
-    "status": "completed"
-  }
-  ```
+  -d '{"title":"Updated via curl","description":"Updated from terminal","status":"completed"}'
+```
 
-### Delete a task
+### Delete
 
 ```bash
-curl -X DELETE https://taskaza.onrender.com/tasks/1 \
-  -H "Authorization: Bearer <your_token>" \
+curl -X DELETE "$BASE_URL/tasks/1" \
+  -H "Authorization: Bearer $TOKEN" \
   -H "X-API-Key: 123456"
 ```
-
-> Replace `<your_token>` with your actual JWT access token.
-
-
-## 📁 Tech Stack
-
-* FastAPI (async)
-* SQLite (local/test db)
-* SQLAlchemy 2.0 (async ORM)
-* Pydantic v2
-* JWT (OAuth2 password flow)
-* Passlib (bcrypt)
-* Pytest + httpx
-
 
 ## 📜 License
-BSD-3-Clause © 2025 Kayvan Shah. All rights reserved.
 
-This repository is licensed under the `BSD-3-Clause` License. See the [LICENSE](LICENSE) file for details.
-
-#### Disclaimer
+BSD-3-Clause © 2025 Kayvan Shah — see [LICENSE](LICENSE)
 
 <sub>
-The content and code provided in this repository are for educational and demonstrative purposes only. The project may contain experimental features, and the code might not be optimized for production environments. The authors and contributors are not liable for any misuse, damages, or risks associated with the use of this code. Users are advised to review, test, and modify the code to suit their specific use cases and requirements. By using any part of this project, you agree to these terms.
+**Disclaimer:** Demo/educational project. Some features may be experimental. Review and adapt before production use.
 </sub>
