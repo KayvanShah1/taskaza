@@ -1,6 +1,0 @@
-flake8
-black
-httpx
-pytest
-pytest-asyncio
-asgi-lifespan

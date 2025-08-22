@@ -1,0 +1,24 @@
+# Python venv & cache
+.venv
+__pycache__/
+*.pyc
+*.pyo
+
+# Local env
+.env
+
+# Git stuff
+.git
+.gitignore
+
+# Docker stuff
+.dockerignore
+Dockerfile
+
+render.yaml
+
+tests/
+docs/
+data/
+
+requirements-dev.txt

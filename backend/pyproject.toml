@@ -1,0 +1,25 @@
+[project]
+name = "taskaza"
+version = "0.1.0"
+description = "Taskaza is a secure, async, full-stack API built with FastAPI. It supports user sign-up/login, JWT authentication, API key security, and CRUD operations for tasks."
+readme = "README.md"
+requires-python = ">=3.12.11"
+dependencies = [
+    "aiosqlite>=0.21.0",
+    "bcrypt<4.0.0",
+    "fastapi[standard]>=0.116.1",
+    "passlib[bcrypt]>=1.7.4",
+    "pydantic-settings>=2.10.1",
+    "pyjwt>=2.10.1",
+    "sqlalchemy>=2.0.43",
+]
+
+[dependency-groups]
+dev = [
+    "asgi-lifespan>=2.1.0",
+    "black>=25.1.0",
+    "flake8>=7.3.0",
+    "httpx>=0.28.1",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+]
