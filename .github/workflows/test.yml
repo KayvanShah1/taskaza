@@ -6,9 +6,12 @@ on:
     workflow_dispatch:
 
 jobs:
-  build-test:
+  test:
     runs-on: ubuntu-latest
     name: Test
+    defaults:
+        run:
+            working-directory: backend
     env:
       TSKZ_HTTP_API_KEY: ${{ secrets.TSKZ_HTTP_API_KEY }}
 
