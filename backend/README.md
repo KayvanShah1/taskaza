@@ -125,10 +125,10 @@ App: [http://localhost:8000/](http://localhost:8000/)
 
 ```bash
 # main (no dev)
-uv export --format=requirements-txt --no-hashes --output requirements.txt
+uv export --format=requirements-txt --no-hashes --no-header --no-annotate --no-dev --output-file requirements.txt
 
 # dev (includes dev dependencies)
-uv export --format=requirements-txt --no-hashes --only-dev --output requirements-dev.txt
+uv export --format=requirements-txt --no-hashes --no-header --no-annotate --only-dev --output-file requirements-dev.txt
 ```
 
 ---
