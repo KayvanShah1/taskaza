@@ -77,5 +77,5 @@ Built on a robust backend and a sleek React frontend, Taskaza offers both **trad
 BSD-3-Clause © 2025 Kayvan Shah — see [LICENSE](LICENSE)
 
 <sub>
-**Disclaimer:** Demo/educational project. Some features may be experimental. Review and adapt before production use.
+Disclaimer: Demo/educational project. Some features may be experimental. Review and adapt before production use.
 </sub>
