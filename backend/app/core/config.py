@@ -5,6 +5,19 @@ from pydantic import AnyHttpUrl, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+class Path(BaseSettings):
+    BASE_DIR: str = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    DATA_DIR: str = os.path.join(BASE_DIR, "data")
+    LOGS_DIR: str = os.path.join(BASE_DIR, "logs")
+    STATIC_DIR: str = os.path.join(BASE_DIR, "static")
+    TEMPLATES_DIR: str = os.path.join(BASE_DIR, "templates")
+
+    os.makedirs(DATA_DIR, exist_ok=True)
+
+
+path = Path()
+
+
 class Settings(BaseSettings):
     # Secret keys and API keys
     JWT_SECRET_KEY_LENGTH: int = 32  # Length of the JWT secret key
@@ -19,10 +32,7 @@ class Settings(BaseSettings):
     )
 
     # Database settings
-    if not os.path.exists("data"):
-        os.makedirs("data")
-
-    SQLITE_DATABASE_URL: str = Field("sqlite+aiosqlite:///./data/taskaza.db", description="Database connection URL")
+    DATABASE_URL: str = Field("sqlite+aiosqlite:///./data/taskaza.db", description="Database connection URL")
 
     # Configuration for Pydantic settings
     model_config = SettingsConfigDict(env_prefix="TSKZ_", env_file=".env", env_file_encoding="utf-8", extra="ignore")
@@ -34,4 +44,5 @@ if __name__ == "__main__":
     # Debugging: Print the settings to verify they are loaded correctly
     from pprint import pprint
 
+    pprint(path.model_dump(), width=120)  # Debug statement to verify settings loading
     pprint(settings.model_dump(), width=120)  # Debug statement to verify settings loading
