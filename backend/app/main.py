@@ -40,9 +40,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(users.router, tags=["Users"])
-app.include_router(login.router, tags=["Login"])
-app.include_router(tasks.router, tags=["Tasks"])
+app.include_router(users.router)
+app.include_router(login.router)
+app.include_router(tasks.router)
 
 
 @app.get("/", include_in_schema=False)

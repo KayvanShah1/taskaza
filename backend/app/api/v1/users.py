@@ -5,7 +5,7 @@ from app.core.dependencies import get_db
 from app.crud import user as crud_user
 from app.schemas.user import UserCreate, UserOut
 
-router = APIRouter()
+router = APIRouter(tags=["Users"])
 
 
 @router.post(

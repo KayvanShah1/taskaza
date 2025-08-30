@@ -7,7 +7,7 @@ from app.core.dependencies import get_db
 from app.schemas.token import Token
 from app.schemas.user import UserOut
 
-router = APIRouter()
+router = APIRouter(tags=["Login"])
 
 
 @router.post("/token", response_model=Token)
