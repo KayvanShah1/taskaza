@@ -22,8 +22,26 @@ services:
     env_file: ./backend/.env
 
     networks:
-      - taskaza-network
+      - taskaza-nw
+
+  db:
+    image: postgres:17
+    container_name: taskaza-db
+    restart: always
+    environment:
+      POSTGRES_USER: taskaza_user
+      POSTGRES_PASSWORD: taskaza_password
+      POSTGRES_DB: taskaza_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - taskaza-nw
 
 networks:
-  taskaza-network:
+  taskaza-nw:
     driver: bridge
+
+volumes:
+  postgres_data:
