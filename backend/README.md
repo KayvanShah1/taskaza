@@ -217,11 +217,3 @@ curl -X DELETE "$BASE_URL/tasks/1" \
   -H "Authorization: Bearer $TOKEN" \
   -H "X-API-Key: 123456"
 ```
-
-## 📜 License
-
-BSD-3-Clause © 2025 Kayvan Shah — see [LICENSE](LICENSE)
-
-<sub>
-**Disclaimer:** Demo/educational project. Some features may be experimental. Review and adapt before production use.
-</sub>
