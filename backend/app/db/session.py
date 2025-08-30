@@ -4,10 +4,16 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
 )
 from sqlalchemy.orm import declarative_base
+from sqlalchemy.engine import make_url
 
 from app.core.config import settings
 
-engine = create_async_engine(settings.SQLITE_DATABASE_URL, connect_args={"check_same_thread": False})
+url = make_url(settings.DATABASE_URL)
+is_sqlite = url.drivername.startswith("sqlite")
+
+engine = create_async_engine(
+    settings.DATABASE_URL, connect_args={"check_same_thread": False} if is_sqlite else {}, pool_pre_ping=True
+)
 async_session = async_sessionmaker(
     bind=engine,
     class_=AsyncSession,
