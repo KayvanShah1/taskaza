@@ -7,13 +7,16 @@
 		"build": "next build --turbopack",
 		"start": "next start",
 		"lint": "eslint",
+		"lint:fix": "eslint --fix",
 		"upgrade:tailwind": "npx @tailwindcss/upgrade@latest"
 	},
 	"dependencies": {
+		"@radix-ui/react-slot": "^1.2.3",
 		"@remixicon/react": "^4.6.0",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"lucide-react": "^0.542.0",
+		"motion": "^12.23.12",
 		"next": "15.5.2",
 		"next-themes": "^0.4.6",
 		"react": "19.1.0",
