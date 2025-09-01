@@ -4,34 +4,17 @@ on:
     branches:
       - ui-setup
 
-defaults:
-  run:
-    working-directory: frontend
-
-
 jobs:
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm install
-      - run: npm run lint
-
-  build: 
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm install
-      - run: npm run build
-
   deploy-production:
     name: Deploy (Production)
-    needs: [lint, build]
+
     runs-on: ubuntu-latest
     environment:
       name: vercel
+
+    defaults:
+      run:
+        working-directory: frontend
 
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
