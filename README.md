@@ -10,7 +10,7 @@ Built on a robust backend and a sleek React frontend, Taskaza offers both **trad
 
 🔗 [API Docs](https://taskaza.onrender.com)
 
-🔗 [Web Dashboard](https://KayvanShah.github.io/taskaza) 🚧 Under Construction
+🔗 [Web Dashboard](https://taskaza.vercel.app/) 🚧 Under Construction
 
 ## Why Taskaza?
 
