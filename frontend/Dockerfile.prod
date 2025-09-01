@@ -1,0 +1,59 @@
+# ---- Base metadata ----
+# Build-time args (optional overrides)
+ARG NODE_VERSION=20-alpine
+
+# ---- Deps stage: install only production deps based on lockfile ----
+FROM node:${NODE_VERSION} AS deps
+WORKDIR /app
+
+# Speed up installs & keep image clean
+ENV CI=true \
+    NEXT_TELEMETRY_DISABLED=1
+
+# Copy only files needed to compute dependency graph
+COPY package.json package-lock.json ./
+
+# Install deps (ci = clean install from lockfile)
+RUN npm ci
+
+# ---- Builder stage: build Next.js app ----
+FROM node:${NODE_VERSION} AS builder
+WORKDIR /app
+ENV CI=true NEXT_TELEMETRY_DISABLED=1
+
+# Copy installed deps from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy the rest of the app
+# (Your repo has code under src/, app/, components/, etc.)
+COPY . .
+
+# Build Next.js for production
+RUN npm run build
+
+# ---- Runner stage: minimal runtime image ----
+FROM node:${NODE_VERSION} AS runner
+WORKDIR /app
+
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1 \
+    PORT=3000 \
+    HOSTNAME=0.0.0.0
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
+
+# Copy the standalone output produced by Next.js
+# This keeps runtime image small and fast
+COPY --from=builder /app/.next/standalone ./
+# Static assets
+COPY --from=builder /app/.next/static ./.next/static
+# Public folder (favicons, images, robots.txt, etc.)
+COPY --from=builder /app/public ./public
+
+# Ownership for non-root
+RUN chown -R nextjs:nodejs /app
+USER nextjs
+
+EXPOSE 3000
+CMD ["node", "server.js"]

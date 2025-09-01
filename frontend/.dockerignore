@@ -1,0 +1,16 @@
+# Node / Next
+node_modules
+.next
+out
+# Vercel/CI
+.vercel
+.github
+# Logs & misc
+npm-debug.log*
+yarn.lock
+pnpm-lock.yaml
+*.local
+.DS_Store
+coverage
+.next
+Dockerfile.*

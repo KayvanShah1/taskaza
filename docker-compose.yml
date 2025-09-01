@@ -5,29 +5,26 @@ services:
       dockerfile: Dockerfile
     image: kayvan999/taskaza:latest
     container_name: taskaza-api
-
-    # <port on localhost>:<port on container>
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
     ports: 
       - 8000:8000
-
-    # creating a bind mount to keep our container and dev env in sync
-    # with read only command for added security
     volumes:
       - ./backend:/usr/src/app:ro
       - ./backend/data:/usr/src/app/data
-    
-    # override the command to start the server with --reload
     command: fastapi dev app/main.py --host 0.0.0.0 --port 8000
-    
     env_file: ./backend/.env
-
+    environment:
+      TSKZ_DATABASE_URL: postgresql+asyncpg://taskaza_user:taskaza_password@db:5432/taskaza_db
     networks:
       - taskaza-nw
 
   db:
     image: postgres:17
     container_name: taskaza-db
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: taskaza_user
       POSTGRES_PASSWORD: taskaza_password
@@ -38,6 +35,30 @@ services:
       - 5432:5432
     networks:
       - taskaza-nw
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskaza_user -d taskaza_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  frontend:
+    image: kayvan999/taskaza-ui:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: taskaza-ui
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      NEXT_TELEMETRY_DISABLED: 1
+    command: npm run dev
+    networks:
+      - taskaza-nw
+    restart: unless-stopped
 
 networks:
   taskaza-nw:
