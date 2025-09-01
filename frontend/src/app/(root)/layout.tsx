@@ -1,5 +1,5 @@
-import MarketingNavbar from "@/components/layout/marketing-navbar";
-import MarketingFooter from "@/components/layout/marketing-footer";
+import MarketingNavbar from "@/components/layout/landing-page/marketing-navbar";
+import MarketingFooter from "@/components/layout/landing-page/marketing-footer";
 import React from "react";
 
 const Layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
