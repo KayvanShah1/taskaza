@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import { Separator } from "../ui/separator";
+import { Separator } from "../../ui/separator";
 
 const menuItems = [
 	{ name: "Features", href: "#features", external: false },
@@ -66,7 +66,7 @@ export default function MarketingNavbar() {
 
 						<div className="flex items-center gap-2">
 							<Button asChild variant="outline" size="sm" className={cn(isScrolled && "lg:hidden")}>
-								<Link href="#">
+								<Link href="/dashboard">
 									<span>Login</span>
 								</Link>
 							</Button>
