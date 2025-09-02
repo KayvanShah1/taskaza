@@ -1,4 +1,4 @@
-name: Taskaza CI/CD Pipeline
+name: Build & deploy application to Render
 
 on:
   push:
