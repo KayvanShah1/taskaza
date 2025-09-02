@@ -68,7 +68,9 @@ jobs:
           context: "{{defaultContext}}:backend"
           file: Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/taskaza:${{ github.sha }}
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/taskaza-api:${{ github.sha }}
+          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/taskaza-api:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/taskaza-api:buildcache,mode=max
 
 
   deploy-to-render:
@@ -77,9 +79,6 @@ jobs:
     needs: test
     environment:
       name: render
-    defaults:
-      run:
-        working-directory: backend
 
     steps:
       - name: Deploy to Render
@@ -88,5 +87,6 @@ jobs:
           service_id: ${{ secrets.RENDER_SERVICE_ID }}
           api_key: ${{ secrets.RENDER_API_KEY }}
           github_deployment: true
+          wait_deploy: true
           deployment_environment: 'render'
           github_token: ${{ secrets.GITHUB_TOKEN }}
