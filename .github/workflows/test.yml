@@ -5,10 +5,6 @@ on:
         branches: [ "**" ]
         paths:      
           - "backend/**"
-        paths-ignore:
-          - "backend/README.md"
-          - "backend/docs/**"
-          - "backend/.gitignore"
     workflow_dispatch:
 
 jobs:

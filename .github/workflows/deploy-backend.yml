@@ -6,10 +6,6 @@ on:
       - main
     paths:      
       - "backend/**"
-    paths-ignore:
-      - "backend/README.md"
-      - "backend/docs/**"
-      - "backend/.gitignore"
 
 permissions:
   contents: write
