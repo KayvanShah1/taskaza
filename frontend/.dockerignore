@@ -12,6 +12,4 @@ pnpm-lock.yaml
 *.local
 .DS_Store
 coverage
-.next
-Dockerfile.*
 vercel.json
