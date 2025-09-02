@@ -1,7 +1,9 @@
 # Taskaza – AI-Powered Task Management Platform
 
-![🚀 Deploy & Test](https://github.com/kayvanshah1/taskaza/actions/workflows/deploy.yml/badge.svg)
-![🌀 Keep Taskaza Alive](https://github.com/kayvanshah1/taskaza/actions/workflows/ping-taskaza.yml/badge.svg)
+![Deploy Backend](https://github.com/kayvanshah1/taskaza/actions/workflows/deploy-backend.yml/badge.svg)
+![Keep Taskaza Alive](https://github.com/kayvanshah1/taskaza/actions/workflows/ping-taskaza.yml/badge.svg)
+![Deploy UI](https://github.com/kayvanshah1/taskaza/actions/workflows/deploy-ui.yml/badge.svg)
+![Test](https://github.com/kayvanshah1/taskaza/actions/workflows/test.yml/badge.svg)
 
 Taskaza is a **modern productivity app** that blends **secure APIs**, **AI-powered assistance**, and a **clean web dashboard** to help you manage tasks effortlessly.
 Built on a robust backend and a sleek React frontend, Taskaza offers both **traditional task CRUD operations** and a **conversational AskBar powered by AI**.
