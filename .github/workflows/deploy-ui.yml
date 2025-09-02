@@ -69,3 +69,5 @@ jobs:
           file: Dockerfile.prod
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/taskaza-ui:${{ github.sha }}
+          cache-from: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/taskaza-frontend:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_HUB_USERNAME }}/taskaza-frontend:buildcache,mode=max
