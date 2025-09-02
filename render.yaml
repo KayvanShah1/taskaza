@@ -1,0 +1,7 @@
+services:
+    - type: web
+      name: Taskaza
+      runtime: docker
+      rootDir: backend
+      plan: free
+      autoDeploy: true
