@@ -3,7 +3,7 @@ services:
     build:
       context: ./backend/
       dockerfile: Dockerfile
-    image: kayvan999/taskaza:latest
+    image: kayvan999/taskaza-api:latest
     container_name: taskaza-api
     depends_on:
       db:
