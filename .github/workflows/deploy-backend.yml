@@ -11,9 +11,9 @@ permissions:
   
 
 jobs:
-  build-test:
+  test:
     runs-on: ubuntu-latest
-    name: Build and Test
+    name: Test
     env:
       TSKZ_HTTP_API_KEY: ${{ secrets.TSKZ_HTTP_API_KEY }}
     defaults:
@@ -43,12 +43,9 @@ jobs:
   docker-deploy:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
-    needs: build-test
+    needs: test
     environment:
       name: docker_hub
-    defaults:
-      run:
-        working-directory: backend
 
     steps:
       - name: Checkout code
@@ -61,20 +58,23 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Set up Docker Buildx
+        id: buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Build and push image to Docker Hub
         uses: docker/build-push-action@v5
         with:
-          context: .
+          builder: ${{ steps.buildx.outputs.name }}
+          context: "{{defaultContext}}:backend"
+          file: Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/taskaza:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/taskaza:${{ github.sha }}
 
 
   deploy-to-render:
     name: Deploy to Render
     runs-on: ubuntu-latest
-    needs: docker-deploy
+    needs: test
     environment:
       name: render
     defaults:
