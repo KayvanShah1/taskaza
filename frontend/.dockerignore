@@ -13,3 +13,7 @@ pnpm-lock.yaml
 .DS_Store
 coverage
 vercel.json
+.git
+*.log
+AGENTS.md
+vercel.json
