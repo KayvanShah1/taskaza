@@ -12,7 +12,7 @@ src/
     (root)/
       page.tsx                 # Landing (hero, features, logo-cloud, CTA)
       layout.tsx               # Root marketing chrome (Navbar/Footer)
-    (dashboard)/
+    dashboard/
       layout.tsx               # Dashboard shell (Sidebar + dashboard Navbar)
       page.tsx                 # /dashboard -> redirects to /dashboard/home
       home/page.tsx
