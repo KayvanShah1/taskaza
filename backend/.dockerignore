@@ -13,7 +13,6 @@ __pycache__/
 
 # Docker stuff
 .dockerignore
-Dockerfile
 
 render.yaml
 
