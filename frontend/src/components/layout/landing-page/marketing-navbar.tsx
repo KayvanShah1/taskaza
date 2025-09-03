@@ -3,11 +3,11 @@
 import { Logo } from "@/components/logo";
 import ThemeToggle from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import { Separator } from "../../ui/separator";
 
 const menuItems = [
 	{ name: "Features", href: "#features", external: false },
