@@ -59,15 +59,14 @@ Built on a robust backend and a sleek React frontend, Taskaza offers both **trad
 ## Tech Highlights
 
 * **Backend**: FastAPI, async SQLAlchemy, JWT, API keys, SQLite → Postgres
-* **Frontend**: React, shadcn/ui, Tailwind, TanStack Query, RHF + Zod
+* **Frontend**: Nextjs, shadcn/ui, Tailwind, RHF + Zod
 * **AI**: FastMCP server, OpenRouter LLMs (free OSS where available)
-* **Infra**: Docker, GitHub Actions CI/CD, Render/Railway deploy
+* **Infra**: Docker, GitHub Actions CI/CD, Render and Vercel deploy
 * **Testing**: Pytest (backend), Playwright (frontend)
 
 ## Project Structure
 - `/backend` → FastAPI API (Task Management system; see its README for setup)
 - `/frontend` → Next.js app (landing page + dashboard UI)
-  - See [`/frontend/agents.md`](./frontend/agents.md) for details on AskBar + Agent integration
 
 ## Roadmap
 
