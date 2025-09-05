@@ -1,20 +1,6 @@
 import { Logo } from "@/components/logo";
+import navLinks from "@/data/nav-links";
 import Link from "next/link";
-
-const links = [
-	{
-		title: "Features",
-		href: "#",
-	},
-	{
-		title: "About",
-		href: "#",
-	},
-	{
-		title: "API Docs",
-		href: "#",
-	},
-];
 
 export default function FooterSection() {
 	return (
@@ -25,13 +11,14 @@ export default function FooterSection() {
 				</Link>
 
 				<div className="my-8 flex flex-wrap justify-center gap-6 text-sm">
-					{links.map((link, index) => (
+					{navLinks.map((link, index) => (
 						<Link
 							key={index}
 							href={link.href}
 							className="text-muted-foreground hover:text-primary block duration-150"
+							{...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
 						>
-							<span>{link.title}</span>
+							<span>{link.name}</span>
 						</Link>
 					))}
 				</div>

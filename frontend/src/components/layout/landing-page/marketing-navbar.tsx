@@ -3,17 +3,12 @@
 import { Logo } from "@/components/logo";
 import ThemeToggle from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import navLinks from "@/data/nav-links";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import { Separator } from "../../ui/separator";
-
-const menuItems = [
-	{ name: "Features", href: "#features", external: false },
-	{ name: "About", href: "#about", external: false },
-	{ name: "API Docs", href: "https://taskaza.onrender.com/redoc", external: true },
-];
 
 export default function MarketingNavbar() {
 	const [menuState, setMenuState] = React.useState(false);
@@ -50,7 +45,7 @@ export default function MarketingNavbar() {
 						{/* Center: Desktop nav */}
 						<div className="hidden lg:block">
 							<ul className="flex gap-8 text-sm">
-								{menuItems.map((item, i) => (
+								{navLinks.map((item, i) => (
 									<li key={i}>
 										<Link
 											href={item.href}
@@ -66,17 +61,17 @@ export default function MarketingNavbar() {
 
 						<div className="flex items-center gap-2">
 							<Button asChild variant="outline" size="sm" className={cn(isScrolled && "lg:hidden")}>
-								<Link href="/dashboard">
+								<Link href="/login">
 									<span>Login</span>
 								</Link>
 							</Button>
 							<Button asChild size="sm" className={cn(isScrolled && "lg:hidden")}>
-								<Link href="#">
+								<Link href="/signup">
 									<span>Sign Up</span>
 								</Link>
 							</Button>
 							<Button asChild size="sm" className={cn(isScrolled ? "hidden lg:inline-flex" : "hidden")}>
-								<Link href="#">
+								<Link href="/signup">
 									<span>Get Started</span>
 								</Link>
 							</Button>
@@ -104,7 +99,7 @@ export default function MarketingNavbar() {
 								)}
 							>
 								<ul className="space-y-4 text-base">
-									{menuItems.map((item, index) => (
+									{navLinks.map((item, index) => (
 										<li key={index}>
 											<Link
 												href={item.href}

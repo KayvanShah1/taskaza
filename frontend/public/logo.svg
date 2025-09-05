@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="256" height="256">
+    <defs>
+        <linearGradient id="logo-gradient" x1="0" y1="0" x2="0" y2="24" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#9B99FE" />
+            <stop offset="1" stop-color="#2BC8B7" />
+        </linearGradient>
+    </defs>
+    <!-- Rounded square background -->
+    <rect width="24" height="24" rx="5" fill="url(#logo-gradient)" />
+    <!-- White "T" -->
+    <path d="M7 6h10v4h-3v12h-4V10H7V6z" fill="white" />
+</svg>
