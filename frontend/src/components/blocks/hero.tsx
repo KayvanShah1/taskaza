@@ -148,7 +148,7 @@ export default function Hero() {
 										className="bg-foreground/10 rounded-[calc(var(--radius-xl)+0.125rem)] border p-0.5"
 									>
 										<Button asChild size="lg" className="rounded-xl px-5 text-base">
-											<Link href="#link">
+											<Link href="/signup">
 												<span className="text-nowrap">Get Started</span>
 											</Link>
 										</Button>
