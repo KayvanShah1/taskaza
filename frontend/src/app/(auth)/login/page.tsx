@@ -16,7 +16,7 @@ export default function LoginPage() {
 		handleSubmit,
 		formState: { errors, isSubmitting },
 		setError,
-	} = useAuthForm<LoginValues>(LoginSchema, { email: "", pwd: "" });
+	} = useAuthForm<LoginValues>(LoginSchema, { username: "", password: "" });
 
 	const onSubmit = async (values: LoginValues) => {
 		try {
@@ -28,12 +28,12 @@ export default function LoginPage() {
 			if (!res.ok) {
 				const data = (await res.json().catch(() => ({}))) as { detail?: string };
 				const message = data?.detail ?? "Invalid credentials";
-				setError("pwd", { type: "server", message });
+				setError("password", { type: "server", message });
 				return;
 			}
 			window.location.href = "/dashboard";
 		} catch {
-			setError("email", { type: "server", message: "Network error. Try again." });
+			setError("username", { type: "server", message: "Network error. Try again." });
 		}
 	};
 
@@ -52,20 +52,20 @@ export default function LoginPage() {
 		>
 			<form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
 				<TextField
-					id="email"
-					label="Email"
-					type="email"
-					autoComplete="email"
-					register={register("email")}
-					error={errors.email}
+					id="username"
+					label="Username"
+					type="text"
+					autoComplete="username"
+					register={register("username")}
+					error={errors.username}
 				/>
 
 				<PasswordField
 					id="pwd"
 					label="Password"
 					autoComplete="current-password"
-					register={register("pwd")}
-					error={errors.pwd}
+					register={register("password")}
+					error={errors.password}
 					linkSlot={
 						<Button asChild variant="link" size="sm" type="button">
 							<Link href="#" className="text-sm">

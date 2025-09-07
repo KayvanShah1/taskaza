@@ -17,33 +17,33 @@ export default function SignUpPage() {
 		formState: { errors, isSubmitting },
 		setError,
 	} = useAuthForm<SignUpValues>(SignUpSchema, {
-		firstname: "",
-		lastname: "",
-		email: "",
-		pwd: "",
+		// firstname: "",
+		// lastname: "",
+		username: "",
+		password: "",
 		confirm: "",
 	});
 
 	const onSubmit = async (values: SignUpValues) => {
 		try {
-			const res = await fetch("/api/auth/register", {
+			const res = await fetch("/api/auth/signup", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
-					first_name: values.firstname,
-					last_name: values.lastname,
-					email: values.email,
-					password: values.pwd,
+					// first_name: values.firstname,
+					// last_name: values.lastname,
+					username: values.username,
+					password: values.password,
 				}),
 			});
 			if (!res.ok) {
 				const data = (await res.json().catch(() => ({}))) as { detail?: string };
-				setError("email", { type: "server", message: data?.detail ?? "Unable to create account" });
+				setError("username", { type: "server", message: data?.detail ?? "Unable to create account" });
 				return;
 			}
 			window.location.href = "/login";
 		} catch {
-			setError("email", { type: "server", message: "Network error. Try again." });
+			setError("username", { type: "server", message: "Network error. Try again." });
 		}
 	};
 
@@ -61,7 +61,7 @@ export default function SignUpPage() {
 			}
 		>
 			<form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
-				<div className="grid grid-cols-2 gap-3">
+				{/* <div className="grid grid-cols-2 gap-3">
 					<TextField
 						id="firstname"
 						label="First name"
@@ -76,23 +76,23 @@ export default function SignUpPage() {
 						register={register("lastname")}
 						error={errors.lastname}
 					/>
-				</div>
+				</div> */}
 
 				<TextField
-					id="email"
-					label="Email"
-					type="email"
-					autoComplete="email"
-					register={register("email")}
-					error={errors.email}
+					id="username"
+					label="Username"
+					type="text"
+					autoComplete="username"
+					register={register("username")}
+					error={errors.username}
 				/>
 
 				<PasswordField
 					id="pwd"
 					label="Password"
 					autoComplete="new-password"
-					register={register("pwd")}
-					error={errors.pwd}
+					register={register("password")}
+					error={errors.password}
 					linkSlot={
 						<Button asChild variant="link" size="sm" type="button">
 							<Link href="#" className="text-sm">
