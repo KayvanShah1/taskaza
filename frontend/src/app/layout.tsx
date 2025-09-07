@@ -17,6 +17,10 @@ export const metadata: Metadata = {
 	title: "Taskaza",
 	description:
 		"Taskaza is a modern productivity app that blends secure APIs, AI-powered assistance, and a clean web dashboard to help you manage tasks effortlessly.",
+	icons: {
+		icon: "/logo.svg",
+		shortcut: "/logo.svg",
+	},
 };
 
 export default function RootLayout({
@@ -26,15 +30,8 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}
-			>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-					disableTransitionOnChange
-				>
+			<body className={`${geistSans.variable} ${geistMono.variable} bg-background antialiased`}>
+				<ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
 					{children}
 				</ThemeProvider>
 			</body>
