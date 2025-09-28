@@ -10,4 +10,4 @@ export const API_KEY = process.env.TSKZ_API_KEY ?? "123456"; // match FastAPI re
 export const CSRF_SECRET = process.env.TSKZ_CSRF_SECRET ?? "";
 
 if (!BACKEND_URL) throw new Error("TSKZ_BACKEND_URL missing");
-if (!CSRF_SECRET) throw new Error("BFF_CSRF_SECRET missing");
+if (!CSRF_SECRET) throw new Error("CSRF_SECRET missing");
