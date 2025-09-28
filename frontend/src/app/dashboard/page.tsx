@@ -20,13 +20,13 @@ export default function Dashboard() {
 
 	useEffect(() => {
 		// user
-		fetch("/api/me", { credentials: "include", cache: "no-store" })
+		fetch("/api/me", { cache: "no-store" })
 			.then((r) => (r.ok ? r.json() : Promise.reject()))
 			.then((d) => setUsername(d.username))
 			.catch(() => router.push("/"));
 
 		// tasks
-		fetch("/api/tasks", { credentials: "include", cache: "no-store" })
+		fetch("/api/tasks", { cache: "no-store" })
 			.then(async (res) => {
 				const data = await res.json().catch(() => null);
 				if (!res.ok) {
@@ -44,7 +44,7 @@ export default function Dashboard() {
 	}, [router]);
 
 	async function handleLogout() {
-		await fetch("/api/logout", { method: "POST", credentials: "include" });
+		await fetch("/api/logout", { method: "POST" });
 		router.push("/");
 	}
 
