@@ -28,7 +28,7 @@ class Settings(BaseSettings):
 
     # CORS settings
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl | str] = Field(
-        ["http://localhost:8000", "*"], description="List of allowed CORS origins for the backend"
+        ["*"], description="List of allowed CORS origins for the backend"
     )
 
     # Database settings
