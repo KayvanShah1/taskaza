@@ -27,7 +27,15 @@ router = APIRouter(
 # -----------------------------
 # Create (supports nested subtasks via ?create_subtree)
 # -----------------------------
-@router.post("/", response_model=TaskOut, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/",
+    response_model=TaskOut,
+    status_code=status.HTTP_201_CREATED,
+    summary="Create a task",
+    description=(
+        "Create a new task for the authenticated user. Optionally create nested subtasks when provided on the payload."
+    ),
+)
 async def create_task(
     task_in: TaskCreate,
     create_subtree: bool = Query(
@@ -37,6 +45,23 @@ async def create_task(
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """
+    Create Task
+
+    **Auth**
+    - Requires `Authorization: Bearer <JWT>` and `X-API-Key`.
+
+    **Query Parameters**
+    - `create_subtree` (bool): If `true`, recursively persists `subtasks` provided in the body.
+
+    **Request Body**
+    - `TaskCreate`: Title, optional description, optional parent, optional `subtasks`.
+
+    **Responses**
+    - `201`: Returns the created `TaskOut`.
+    - `401/403`: Missing/invalid auth or API key.
+    - `422`: Validation error.
+    """
     payload = task_in.model_dump(exclude_none=True)
     if create_subtree and (payload.get("subtasks") or []):
         return await crud.create_task_with_subtree(db, user_id=user.id, task_data=payload)
@@ -46,18 +71,44 @@ async def create_task(
 # -----------------------------
 # List (filters + pagination)
 # -----------------------------
-@router.get("/", response_model=list[TaskOut], status_code=status.HTTP_200_OK)
+@router.get(
+    "/",
+    response_model=list[TaskOut],
+    status_code=status.HTTP_200_OK,
+    summary="List tasks",
+    description=(
+        "Fetch the current user's tasks with optional status filtering, search, sorting, "
+        "pagination, and eager-loading of subtasks."
+    ),
+)
 async def list_tasks(
-    status_: Optional[TaskStatus] = Query(default=None, alias="status"),
-    q: Optional[str] = None,
-    page: int = Query(1, ge=1),
-    limit: int = Query(20, ge=1, le=100),
-    sort: Literal["asc", "desc"] = Query("desc"),
-    include_tree: bool = Query(False, description="Eager-load subtasks"),
-    roots_only: bool = Query(False, description="Only return parent_id IS NULL"),
+    status_: Optional[TaskStatus] = Query(default=None, alias="status", description="Filter by task status"),
+    q: Optional[str] = Query(default=None, description="Free-text search over title/description"),
+    page: int = Query(1, ge=1, description="Page number (1-based)"),
+    limit: int = Query(20, ge=1, le=100, description="Page size"),
+    sort: Literal["asc", "desc"] = Query("desc", description="Sort by created time"),
+    include_tree: bool = Query(False, description="If true, eagerly load subtasks"),
+    roots_only: bool = Query(False, description="If true, only return root tasks (parent_id is NULL)"),
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """
+    List Tasks
+
+    **Auth**
+    - Requires `Authorization: Bearer <JWT>` and `X-API-Key`.
+
+    **Query Parameters**
+    - `status` (TaskStatus): Filter by status.
+    - `q` (str): Full-text search.
+    - `page`/`limit`: Pagination controls.
+    - `sort` (`asc|desc`): Created time sort order.
+    - `include_tree` (bool): Include subtasks on each item.
+    - `roots_only` (bool): Only top-level tasks.
+
+    **Responses**
+    - `200`: List of `TaskOut`.
+    """
     return await crud.get_tasks_for_user(
         db,
         user.id,
@@ -74,13 +125,35 @@ async def list_tasks(
 # -----------------------------
 # Read
 # -----------------------------
-@router.get("/{task_id}", response_model=TaskOut, status_code=status.HTTP_200_OK)
+@router.get(
+    "/{task_id}",
+    response_model=TaskOut,
+    status_code=status.HTTP_200_OK,
+    summary="Get a task by ID",
+    description="Retrieve a single task that belongs to the authenticated user.",
+)
 async def get_task(
     task_id: int,
-    include_tree: bool = Query(True, description="Eager-load subtasks"),
+    include_tree: bool = Query(True, description="If true, eagerly load subtasks"),
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """
+    Get Task
+
+    **Auth**
+    - Requires `Authorization: Bearer <JWT>` and `X-API-Key`.
+
+    **Path Parameters**
+    - `task_id` (int): Identifier of the task.
+
+    **Query Parameters**
+    - `include_tree` (bool): Include subtasks in the response.
+
+    **Responses**
+    - `200`: `TaskOut`
+    - `404`: Task not found (or not owned by user).
+    """
     task = await crud.get_task_by_id(db, task_id, user.id, include_tree=include_tree)
     if not task:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
@@ -90,13 +163,36 @@ async def get_task(
 # -----------------------------
 # Update (partial). exclude_unset avoids nulling omitted fields.
 # -----------------------------
-@router.put("/{task_id}", response_model=TaskOut, status_code=status.HTTP_200_OK)
+@router.put(
+    "/{task_id}",
+    response_model=TaskOut,
+    status_code=status.HTTP_200_OK,
+    summary="Update a task (partial)",
+    description="Partially update fields on a task. Fields omitted are left unchanged.",
+)
 async def update_task(
     task_id: int,
     update: TaskUpdate,
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """
+    Update Task (Partial)
+
+    **Auth**
+    - Requires `Authorization: Bearer <JWT>` and `X-API-Key`.
+
+    **Path Parameters**
+    - `task_id` (int): Task identifier.
+
+    **Request Body**
+    - `TaskUpdate`: Any subset of updatable fields. Omitted fields are not modified.
+
+    **Responses**
+    - `200`: Updated `TaskOut`
+    - `400`: Invalid re-parenting or business rule violation.
+    - `404`: Task not found (or not owned by user).
+    """
     task = await crud.get_task_by_id(db, task_id, user.id, include_tree=False)
     if not task:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
@@ -112,13 +208,35 @@ async def update_task(
 # -----------------------------
 # Update status (PATCH)
 # -----------------------------
-@router.patch("/{task_id}", response_model=TaskOut, status_code=status.HTTP_200_OK)
+@router.patch(
+    "/{task_id}",
+    response_model=TaskOut,
+    status_code=status.HTTP_200_OK,
+    summary="Update only the status of a task",
+    description="Convenience endpoint to change the status without touching other fields.",
+)
 async def update_task_status(
     task_id: int,
     update: TaskStatusUpdate,
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """
+    Update Task Status
+
+    **Auth**
+    - Requires `Authorization: Bearer <JWT>` and `X-API-Key`.
+
+    **Path Parameters**
+    - `task_id` (int): Task identifier.
+
+    **Request Body**
+    - `TaskStatusUpdate`: New status (e.g., `todo`, `in_progress`, `completed`, `cancelled`).
+
+    **Responses**
+    - `200`: Updated `TaskOut`
+    - `404`: Task not found (or not owned by user).
+    """
     task = await crud.get_task_by_id(db, task_id, user.id, include_tree=False)
     if not task:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
@@ -128,12 +246,30 @@ async def update_task_status(
 # -----------------------------
 # Delete
 # -----------------------------
-@router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{task_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete a task",
+    description="Delete a task owned by the authenticated user.",
+)
 async def delete_task(
     task_id: int,
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """
+    Delete Task
+
+    **Auth**
+    - Requires `Authorization: Bearer <JWT>` and `X-API-Key`.
+
+    **Path Parameters**
+    - `task_id` (int): Task identifier.
+
+    **Responses**
+    - `204`: Deleted successfully (no content).
+    - `404`: Task not found (or not owned by user).
+    """
     task = await crud.get_task_by_id(db, task_id, user.id, include_tree=False)
     if not task:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Task not found")
@@ -143,12 +279,34 @@ async def delete_task(
 # -----------------------------
 # Bulk (create + status updates)
 # -----------------------------
-@router.post("/bulk", response_model=TaskBulkResponse, status_code=status.HTTP_200_OK)
+@router.post(
+    "/bulk",
+    response_model=TaskBulkResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Bulk operations",
+    description="Create multiple tasks in one call and/or update statuses of existing tasks.",
+)
 async def bulk_tasks(
     payload: TaskBulkRequest,
     user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """
+    Bulk Tasks
+
+    **Auth**
+    - Requires `Authorization: Bearer <JWT>` and `X-API-Key`.
+
+    **Request Body**
+    - `TaskBulkRequest`:
+      - `create`: List of `TaskCreate` objects (optional).
+      - `update_status`: List of `{ id, status }` pairs (optional).
+
+    **Responses**
+    - `200`: `TaskBulkResponse` with `created` and `updated` arrays.
+    - `401/403`: Missing/invalid auth or API key.
+    - `422`: Validation error.
+    """
     created = []
     if payload.create:
         created = await crud.create_tasks_bulk(db, user.id, [t.model_dump(exclude_none=True) for t in payload.create])
