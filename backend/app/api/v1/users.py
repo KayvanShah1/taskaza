@@ -14,8 +14,28 @@ router = APIRouter(tags=["Users"])
     response_model=UserOut,
     status_code=status.HTTP_201_CREATED,
     response_description="Successfully registered a new user",
+    summary="Register a new user",
+    description=(
+        "Create a new user account with a unique username and password. "
+        "Optionally provide an email and display name. "
+        "Passwords are securely hashed before storage."
+    ),
 )
 async def signup(user_in: UserCreate, db: AsyncSession = Depends(get_db)):
+    """
+    **Sign Up**
+
+    **Request Body**
+    - `username` (str, required): Must be unique
+    - `password` (str, required): Plaintext input, stored as hash
+    - `email` (str, optional): Must be unique if provided
+    - `display_name` (str, optional)
+
+    **Responses**
+    - `201`: Returns the created `UserOut` (without password)
+    - `400`: Username or email already taken
+    - `422`: Validation error
+    """
     existing = await crud_user.get_user_by_username(db, user_in.username)
     if existing:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already taken")
@@ -38,8 +58,20 @@ async def signup(user_in: UserCreate, db: AsyncSession = Depends(get_db)):
     response_model=UserOut,
     dependencies=[Depends(verify_api_key)],
     status_code=status.HTTP_200_OK,
+    summary="Get current user profile",
+    description="Retrieve details of the authenticated user (requires JWT + API key).",
 )
 async def get_me(current_user: User = Depends(get_current_user)):
+    """
+    **Get Current User**
+
+    **Auth**
+    - Requires `Authorization: Bearer <JWT>` and `X-API-Key`.
+
+    **Responses**
+    - `200`: Returns current user's `UserOut`
+    - `401/403`: Invalid or missing authentication
+    """
     return current_user
 
 
@@ -48,12 +80,33 @@ async def get_me(current_user: User = Depends(get_current_user)):
     response_model=UserOut,
     dependencies=[Depends(verify_api_key)],
     status_code=status.HTTP_200_OK,
+    summary="Update current user profile",
+    description=(
+        "Replace the authenticated user's profile fields with the provided values. "
+        "Fields not included will be set to null."
+    ),
 )
 async def update_me(
     update: UserUpdate,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """
+    **Update User (PUT)**
+
+    Completely replace user attributes with the given payload.
+
+    **Auth**
+    - Requires `Authorization: Bearer <JWT>` and `X-API-Key`.
+
+    **Request Body**
+    - `UserUpdate`: `username`, `email`, and/or `display_name`.
+
+    **Responses**
+    - `200`: Updated `UserOut`
+    - `400`: Username or email already taken
+    - `401/403`: Unauthorized
+    """
     data = update.model_dump(exclude_unset=True)
     if "username" in data:
         existing = await crud_user.get_user_by_username(db, data["username"])
@@ -71,12 +124,33 @@ async def update_me(
     response_model=UserOut,
     dependencies=[Depends(verify_api_key)],
     status_code=status.HTTP_200_OK,
+    summary="Update current user profile (partial)",
+    description=(
+        "Partially update the authenticated user's profile. "
+        "Only fields provided will be changed; others remain unchanged."
+    ),
 )
 async def patch_me(
     update: UserUpdate,
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
+    """
+    **Update User (PATCH)**
+
+    Modify one or more attributes of the user without replacing the whole record.
+
+    **Auth**
+    - Requires `Authorization: Bearer <JWT>` and `X-API-Key`.
+
+    **Request Body**
+    - `UserUpdate`: Any subset of `username`, `email`, `display_name`.
+
+    **Responses**
+    - `200`: Updated `UserOut`
+    - `400`: Username or email already taken
+    - `401/403`: Unauthorized
+    """
     data = update.model_dump(exclude_unset=True)
     if "username" in data:
         existing = await crud_user.get_user_by_username(db, data["username"])
