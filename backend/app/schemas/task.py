@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional, Self
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, computed_field
 
@@ -62,17 +62,53 @@ class TaskCreate(TaskBase):
         json_schema_extra={
             "examples": [
                 {
+                    "due_date": "2025-12-25",
+                    "estimated_hours": 8,
+                    "priority": "high",
+                    "subtasks": [
+                        {
+                            "status": "completed",
+                            "title": "Outline",
+                            "subtasks": [
+                                {
+                                    "status": "completed",
+                                    "title": "Outline",
+                                    "subtasks": [
+                                        {
+                                            "status": "completed",
+                                            "title": "Outline",
+                                            "subtasks": [
+                                                {"status": "completed", "title": "Outline"},
+                                                {"status": "todo", "title": "Draft content"},
+                                                {"status": "todo", "title": "Design slides"},
+                                            ],
+                                        },
+                                        {"status": "todo", "title": "Draft content"},
+                                        {"status": "todo", "title": "Design slides"},
+                                    ],
+                                },
+                                {"status": "todo", "title": "Draft content"},
+                                {"status": "todo", "title": "Design slides"},
+                            ],
+                        },
+                        {"status": "todo", "title": "Draft content"},
+                        {"status": "todo", "title": "Design slides"},
+                    ],
+                    "tags": ["proposal", "marketing", "Q4", "work"],
+                    "title": "Complete project proposal",
+                },
+                {
                     "title": "Complete project proposal",
                     "priority": "high",
                     "tags": ["proposal", "marketing", "Q4", "work"],
                     "due_date": "2025-12-25",
                     "estimated_hours": 8,
                     "subtasks": [
-                        {"title": "Outline", "completed": True},
-                        {"title": "Draft content", "completed": False},
-                        {"title": "Design slides", "completed": False},
+                        {"title": "Outline", "status": "completed"},
+                        {"title": "Draft content", "status": "todo"},
+                        {"title": "Design slides", "status": "todo"},
                     ],
-                }
+                },
             ]
         }
     )
@@ -131,16 +167,29 @@ class TaskStatusUpdate(BaseModel):
     )
 
 
-# ===== Response (recursive) =====
-class TaskOut(TaskBase):
+# ===== Response (SHALLOW, no subtasks) =====
+class TaskOutShallow(TaskBase):
     id: int
     user_id: int
     parent_id: Optional[int] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
 
+    @computed_field(return_type=float)
+    @property
+    def progress(self) -> float:
+        return 1.0 if self.status == TaskStatus.completed else 0.0
+
+    model_config = ConfigDict(
+        from_attributes=True,
+        populate_by_name=True,
+    )
+
+
+# ===== Response (TREE, recursive subtasks) =====
+class TaskOutTree(TaskOutShallow):
     # recursive children; exposed as "subtasks" in JSON
-    subtasks: List[Self] = Field(
+    subtasks: List["TaskOutTree"] = Field(
         default_factory=list,
         validation_alias="subtasks",
         serialization_alias="subtasks",
@@ -149,6 +198,7 @@ class TaskOut(TaskBase):
     @computed_field(return_type=float)
     @property
     def progress(self) -> float:
+        # Tree: progress from children if present; otherwise fall back to own status
         if self.subtasks:
             total = len(self.subtasks)
             done = sum(1 for c in self.subtasks if c.status == TaskStatus.completed)
@@ -201,7 +251,8 @@ class TaskBulkRequest(BaseModel):
 
 
 class TaskBulkResponse(BaseModel):
-    created: List[TaskOut] = Field(default_factory=list)
-    updated: List[TaskOut] = Field(default_factory=list)
+    # Use shallow outputs to avoid touching relationships in bulk responses
+    created: List[TaskOutShallow] = Field(default_factory=list)
+    updated: List[TaskOutShallow] = Field(default_factory=list)
 
     model_config = ConfigDict(extra="ignore")
