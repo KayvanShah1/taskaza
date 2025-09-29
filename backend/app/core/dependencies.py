@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.auth import verify_access_token
 from app.core.config import settings
-from app.crud.user import get_user_by_username
+from app.crud.user import get_user_by_id
 from app.db.session import async_session
 from app.models.user import User
 
@@ -38,7 +38,7 @@ def verify_api_key(x_api_key: str = Depends(api_key_header)):
 # ---------------------------- #
 async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)) -> User:
     token_data = verify_access_token(token)
-    user = await get_user_by_username(db, token_data.username)
+    user = await get_user_by_id(db, token_data.id)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
