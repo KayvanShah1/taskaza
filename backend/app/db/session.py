@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import sqlite3
-
 from app.core.config import settings
 from sqlalchemy import event
 from sqlalchemy.engine import make_url
@@ -21,15 +19,13 @@ if IS_SQLITE:
 
     @event.listens_for(engine.sync_engine, "connect")
     def _enable_sqlite_pragmas(dbapi_connection, _):
-        if isinstance(dbapi_connection, sqlite3.Connection):
-            cursor = dbapi_connection.cursor()
-            # Always enable FK cascades
-            cursor.execute("PRAGMA foreign_keys=ON")
-            # If file-based (not :memory:), WAL improves concurrency
-            if url.database and url.database not in (":memory:", ""):
-                cursor.execute("PRAGMA journal_mode=WAL")
-                cursor.execute("PRAGMA synchronous=NORMAL")
-            cursor.close()
+        cursor = dbapi_connection.cursor()
+        # Always enable FK cascades
+        cursor.execute("PRAGMA foreign_keys=ON")
+        # If file-based (not :memory:), WAL improves concurrency
+        if url.database and url.database not in (":memory:", ""):
+            cursor.execute("PRAGMA journal_mode=WAL")
+        cursor.close()
 
 
 async_session = async_sessionmaker(
