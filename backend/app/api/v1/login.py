@@ -51,5 +51,5 @@ async def login_with_access_token(form_data: OAuth2PasswordRequestForm = Depends
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
     authd_user = UserOut.model_validate(user)
-    token = create_access_token(data={"sub": authd_user.username})
+    token = create_access_token(data={"sub": str(authd_user.id)})
     return {"access_token": token, "token_type": "bearer"}
