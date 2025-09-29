@@ -42,7 +42,7 @@ class Task(Base):
 
     # --- Identity / ownership ---
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True, nullable=False)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)
 
     # self-referential parent (for subtasks)
     parent_id: Mapped[Optional[int]] = mapped_column(
@@ -103,14 +103,17 @@ class Task(Base):
         "Task",
         cascade="all, delete-orphan",
         back_populates="parent",
-        passive_deletes=True,  # rely on DB cascade (ensure PRAGMA on)
+        passive_deletes=True,
         foreign_keys="Task.parent_id",
+        single_parent=True,  # <-- important for delete-orphan on self-rel
+        lazy="selectin",
     )
     parent = relationship(
         "Task",
         back_populates="subtasks",
         remote_side="Task.id",
         foreign_keys=[parent_id],
+        lazy="selectin",
     )
 
     __table_args__ = (Index("ix_tasks_user_status_due", "user_id", "status", "due_date"),)
