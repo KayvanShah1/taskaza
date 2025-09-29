@@ -37,7 +37,9 @@ class User(Base):
         "Task",
         back_populates="user",
         cascade="all, delete-orphan",
+        passive_deletes=True,
         lazy="selectin",
+        single_parent=True,
     )
 
     def __repr__(self) -> str:
