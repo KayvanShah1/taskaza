@@ -24,6 +24,7 @@ dev = [
     "pytest>=8.4.1",
     "pytest-asyncio>=1.1.0",
 ]
+
 [tool.black]
 line-length = 120
 target-version = ["py312"]
@@ -49,3 +50,8 @@ exclude = [
     "build",
     "dist",
 ]
+
+[tool.uvicorn]
+app = "app.main:app"
+reload = true
+reload-exclude = ["tests/*", "*.pyc", "alembic/*"]
