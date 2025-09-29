@@ -3,12 +3,18 @@ from typing import Optional
 
 from app.core.security import hash_password
 from app.models.user import User
+from sqlalchemy import delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 
 async def get_user_by_username(db: AsyncSession, username: str) -> Optional[User]:
     result = await db.execute(select(User).filter(User.username == username))
+    return result.scalars().first()
+
+
+async def get_user_by_id(db: AsyncSession, id: int) -> Optional[User]:
+    result = await db.execute(select(User).filter(User.id == id))
     return result.scalars().first()
 
 
@@ -71,3 +77,10 @@ async def verify_user_email(db: AsyncSession, token: str) -> Optional[User]:
     await db.commit()
     await db.refresh(user)
     return user
+
+
+async def delete_user(db: AsyncSession, user_id: int) -> bool:
+    stmt = delete(User).where(User.id == user_id)
+    result = await db.execute(stmt)
+    await db.commit()
+    return result.rowcount > 0
