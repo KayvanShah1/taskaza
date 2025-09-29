@@ -7,12 +7,13 @@ Taskaza is a secure, async API built with FastAPI. It supports user sign-up/logi
 
 ## 📦 Features
 
-* User registration (`/signup`) and login (`/token`, OAuth2 password flow)
+* User registration (`/signup`), profile management (`/users/me`), and login (`/token`, OAuth2 password flow)
 * JWT authentication + secure password hashing
 * API key header (`X-API-Key: 123456`) on protected routes
-* Task CRUD (create, list, get, update status/full, delete)
-* Async SQLAlchemy + SQLite, Pydantic v2 validation
-* Thorough tests (unit + full-flow)
+* Hierarchical tasks with nested subtasks, priorities, categories, tags, and computed progress
+* Rich task querying (status filters, search, pagination, sorting, include/exclude subtasks) plus bulk create/status updates
+* Async SQLAlchemy + SQLite (extensible via `TSKZ_DATABASE_URL`), Pydantic v2 validation
+* Thorough async tests (unit + integration/auth flows)
 
 [📊 View architecture diagram](docs/ARCHITECTURE.md)
 
@@ -32,23 +33,39 @@ X-API-Key: 123456
 
 ## 📚 API Endpoints
 
-### Users
+### Auth
 
-| Method | Endpoint  | Description             |
-| ------ | --------- | ----------------------- |
-| POST   | `/signup` | Register a new user     |
-| POST   | `/token`  | Login and get JWT token |
+| Method | Endpoint    | Description                        |
+| ------ | ----------- | ---------------------------------- |
+| POST   | `/signup`   | Register a new user                |
+| POST   | `/token`    | Exchange username/password for JWT |
+
+### Users (Protected)
+
+| Method | Endpoint          | Description                          |
+| ------ | ----------------- | ------------------------------------ |
+| GET    | `/users/me`       | Get the authenticated user's profile |
+| PUT    | `/users/me`       | Replace the authenticated user's profile |
+| PATCH  | `/users/me`       | Partially update your profile        |
+| DELETE | `/users/{user_id}` | Delete your own account              |
 
 ### Tasks (Protected)
 
-| Method | Endpoint      | Description            |
-| ------ | ------------- | ---------------------- |
-| POST   | `/tasks/`     | Create a task          |
-| GET    | `/tasks/`     | List your tasks        |
-| GET    | `/tasks/{id}` | Get a task by ID       |
-| PATCH  | `/tasks/{id}` | Update **status** only |
-| PUT    | `/tasks/{id}` | Update **entire** task |
-| DELETE | `/tasks/{id}` | Delete a task          |
+| Method | Endpoint             | Description                                       |
+| ------ | -------------------- | ------------------------------------------------- |
+| POST   | `/tasks`             | Create a task, optionally with nested subtasks    |
+| GET    | `/tasks`             | List tasks with filtering, search, and pagination |
+| GET    | `/tasks/{task_id}`   | Retrieve a task (optionally include the subtree)  |
+| PUT    | `/tasks/{task_id}`   | Update task fields (partial)                      |
+| PATCH  | `/tasks/{task_id}`   | Update only the task status                       |
+| DELETE | `/tasks/{task_id}`   | Delete a task                                     |
+| POST   | `/tasks/bulk`        | Bulk create tasks and/or change statuses          |
+
+**Extras**
+
+- All `/tasks/*` and `/users/*` endpoints require both `Authorization: Bearer <token>` and `X-API-Key: 123456`.
+- `GET /tasks` supports `status`, `q`, `page`, `limit`, `sort`, `include_tree`, and `roots_only` query params.
+- `POST /tasks` accepts the `create_subtree` query flag (defaults to `true`) to cascade nested subtasks when provided.
 
 ---
 
@@ -99,10 +116,20 @@ openssl rand -base64 32
 
 ### 4) Run locally
 
-**Development:**
+**Development (auto-reload; tests excluded by default):**
 
 ```bash
 uv run fastapi dev app/main.py
+```
+
+FastAPI already excludes the `tests/` directory from reloads via `pyproject.toml`. To be explicit or customise the ignore pattern:
+
+```bash
+# macOS/Linux shells
+uv run fastapi dev app/main.py --reload-exclude 'tests/*'
+
+# Windows PowerShell
+uv run fastapi dev app/main.py --reload-exclude "tests/*"
 ```
 
 **Production:**
@@ -118,6 +145,8 @@ docker compose up --build
 ```
 
 App: [http://localhost:8000/](http://localhost:8000/)
+
+Local SQLite data lives in `data/taskaza.db`. Delete the file to reset your environment or set `TSKZ_DATABASE_URL` to point at another database.
 
 ---
 
