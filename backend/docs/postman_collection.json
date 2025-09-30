@@ -1,181 +1,302 @@
 {
-	"info": {
-		"name": "Taskaza API",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_postman_id": "taskaza-fastapi-collection"
-	},
-	"item": [
-		{
-			"name": "User Signup",
-			"request": {
-				"method": "POST",
-				"header": [
-					{ "key": "Content-Type", "value": "application/json" }
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"strongpassword\"\n}"
-				},
-				"url": {
-					"raw": "https://taskaza.onrender.com/signup",
-					"host": ["https://taskaza.onrender.com"],
-					"path": ["signup"]
-				}
-			}
-		},
-		{
-			"name": "User Login (Get Token)",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/x-www-form-urlencoded"
-					}
-				],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{ "key": "username", "value": "testuser" },
-						{ "key": "password", "value": "strongpassword" }
-					]
-				},
-				"url": {
-					"raw": "https://taskaza.onrender.com/token",
-					"host": ["https://taskaza.onrender.com"],
-					"path": ["token"]
-				}
-			}
-		},
-		{
-			"name": "Create Task",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{access_token}}"
-					},
-					{ "key": "X-API-Key", "value": "123456" },
-					{ "key": "Content-Type", "value": "application/json" }
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"title\": \"Test Task\",\n  \"description\": \"Task description\",\n  \"status\": \"pending\"\n}"
-				},
-				"url": {
-					"raw": "https://taskaza.onrender.com/tasks/",
-					"host": ["https://taskaza.onrender.com"],
-					"path": ["tasks", ""]
-				}
-			}
-		},
-		{
-			"name": "Get All Tasks",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{access_token}}"
-					},
-					{ "key": "X-API-Key", "value": "123456" }
-				],
-				"url": {
-					"raw": "https://taskaza.onrender.com/tasks/",
-					"host": ["https://taskaza.onrender.com"],
-					"path": ["tasks", ""]
-				}
-			}
-		},
-		{
-			"name": "Get Task by ID",
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{access_token}}"
-					},
-					{ "key": "X-API-Key", "value": "123456" }
-				],
-				"url": {
-					"raw": "https://taskaza.onrender.com/tasks/1",
-					"host": ["https://taskaza.onrender.com"],
-					"path": ["tasks", "1"]
-				}
-			}
-		},
-		{
-			"name": "Patch Task Status",
-			"request": {
-				"method": "PATCH",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{access_token}}"
-					},
-					{ "key": "X-API-Key", "value": "123456" },
-					{ "key": "Content-Type", "value": "application/json" }
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"status\": \"completed\"\n}"
-				},
-				"url": {
-					"raw": "https://taskaza.onrender.com/tasks/1",
-					"host": ["https://taskaza.onrender.com"],
-					"path": ["tasks", "1"]
-				}
-			}
-		},
-		{
-			"name": "Put Task Full Update",
-			"request": {
-				"method": "PUT",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{access_token}}"
-					},
-					{ "key": "X-API-Key", "value": "123456" },
-					{ "key": "Content-Type", "value": "application/json" }
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"title\": \"Updated Task\",\n  \"description\": \"New description\",\n  \"status\": \"completed\"\n}"
-				},
-				"url": {
-					"raw": "https://taskaza.onrender.com/tasks/1",
-					"host": ["https://taskaza.onrender.com"],
-					"path": ["tasks", "1"]
-				}
-			}
-		},
-		{
-			"name": "Delete Task",
-			"request": {
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{access_token}}"
-					},
-					{ "key": "X-API-Key", "value": "123456" }
-				],
-				"url": {
-					"raw": "https://taskaza.onrender.com/tasks/1",
-					"host": ["https://taskaza.onrender.com"],
-					"path": ["tasks", "1"]
-				}
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "access_token",
-			"value": "<your_token_here>",
-			"type": "string"
-		}
-	]
+  "info": {
+    "name": "Taskaza API",
+    "_postman_id": "taskaza-fastapi-collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "User Signup",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"strongpassword\",\n  \"email\": \"test@example.com\",\n  \"display_name\": \"Test User\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/signup",
+              "host": ["{{base_url}}"],
+              "path": ["signup"]
+            }
+          }
+        },
+        {
+          "name": "User Login (Get Token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/x-www-form-urlencoded" }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "username", "value": "testuser" },
+                { "key": "password", "value": "strongpassword" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/token",
+              "host": ["{{base_url}}"],
+              "path": ["token"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "X-API-Key", "value": "{{api_key}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/me",
+              "host": ["{{base_url}}"],
+              "path": ["users", "me"]
+            }
+          }
+        },
+        {
+          "name": "Update Current User (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "X-API-Key", "value": "{{api_key}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newaddress@example.com\",\n  \"display_name\": \"New Display Name\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/me",
+              "host": ["{{base_url}}"],
+              "path": ["users", "me"]
+            }
+          }
+        },
+        {
+          "name": "Update Current User (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "X-API-Key", "value": "{{api_key}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"display_name\": \"Partial Update Only\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/me",
+              "host": ["{{base_url}}"],
+              "path": ["users", "me"]
+            }
+          }
+        },
+        {
+          "name": "Delete My Account",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "X-API-Key", "value": "{{api_key}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["users", "{{user_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "Create Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "X-API-Key", "value": "{{api_key}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Complete project proposal\",\n  \"description\": \"Draft and review\",\n  \"priority\": \"high\",\n  \"tags\": [\"proposal\", \"Q4\"],\n  \"subtasks\": [\n    {\"title\": \"Outline\", \"status\": \"completed\"},\n    {\"title\": \"Draft\", \"status\": \"in_progress\"}\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks?create_subtree=true",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"],
+              "query": [
+                { "key": "create_subtree", "value": "true" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Tasks",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "X-API-Key", "value": "{{api_key}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tasks?page=1&limit=20&sort=desc",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"],
+              "query": [
+                { "key": "status", "value": "todo", "disabled": true },
+                { "key": "q", "value": "proposal", "disabled": true },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" },
+                { "key": "sort", "value": "desc" },
+                { "key": "include_tree", "value": "false", "disabled": true },
+                { "key": "roots_only", "value": "false", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Task by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "X-API-Key", "value": "{{api_key}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tasks/{{task_id}}?include_tree=true",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "{{task_id}}"],
+              "query": [
+                { "key": "include_tree", "value": "true" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Task (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "X-API-Key", "value": "{{api_key}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Finalize project proposal\",\n  \"description\": \"Update proposal with new budget numbers\",\n  \"priority\": \"high\",\n  \"tags\": [\"proposal\", \"Q4\"],\n  \"notes\": \"Waiting on client feedback\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "{{task_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Task Status (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "X-API-Key", "value": "{{api_key}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "{{task_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Bulk Task Operations",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "X-API-Key", "value": "{{api_key}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"create\": [\n    {\n      \"title\": \"Draft project proposal\",\n      \"category\": \"work\",\n      \"priority\": \"high\",\n      \"tags\": [\"proposal\", \"Q4\"],\n      \"due_date\": \"2025-10-15T17:00:00Z\"\n    },\n    {\n      \"title\": \"Grocery run\",\n      \"category\": \"personal\",\n      \"priority\": \"low\",\n      \"tags\": [\"errands\"]\n    }\n  ],\n  \"update_status\": [\n    { \"id\": {{task_id}}, \"status\": \"in_progress\" }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks/bulk",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "bulk"]
+            }
+          }
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{access_token}}" },
+              { "key": "X-API-Key", "value": "{{api_key}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tasks/{{task_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "{{task_id}}"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://taskaza.onrender.com",
+      "type": "string",
+      "description": "Swap to http://127.0.0.1:8000 when running locally."
+    },
+    {
+      "key": "api_key",
+      "value": "123456",
+      "type": "string",
+      "description": "Matches HTTP_API_KEY in backend config."
+    },
+    {
+      "key": "access_token",
+      "value": "<paste JWT token here>",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "task_id",
+      "value": "1",
+      "type": "string"
+    }
+  ]
 }
