@@ -34,10 +34,10 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
 def verify_access_token(token: str):
     try:
         payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
-        username: str = payload.get("sub")
-        if not username:
+        sub: str = payload.get("sub")
+        if not sub:
             raise credential_exception
-        token_data = TokenData(username=username)
+        token_data = TokenData(id=int(sub))
         return token_data
     except Exception:
         raise credential_exception

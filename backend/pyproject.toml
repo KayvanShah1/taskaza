@@ -24,3 +24,34 @@ dev = [
     "pytest>=8.4.1",
     "pytest-asyncio>=1.1.0",
 ]
+
+[tool.black]
+line-length = 120
+target-version = ["py312"]
+skip-string-normalization = false
+preview = true
+enable-unstable-feature = ["string_processing"]
+
+[tool.flake8]
+max-line-length = 120
+extend-ignore = [
+    "E203", 
+    "W503",  
+    "E402",
+    "E302",
+    "E305",
+    "E266",
+    "E722",
+]
+exclude = [
+    ".git",
+    "__pycache__",
+    ".venv",
+    "build",
+    "dist",
+]
+
+[tool.uvicorn]
+app = "app.main:app"
+reload = true
+reload-exclude = ["tests/*", "*.pyc", "alembic/*"]

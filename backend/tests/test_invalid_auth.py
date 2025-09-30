@@ -9,8 +9,8 @@ INVALID_API_KEY = "invalid-key"
 BAD_TOKEN = "Bearer badtoken.fake.jwt"
 
 TASK_ENDPOINTS = [
-    ("get", "/tasks/"),
-    ("post", "/tasks/"),
+    ("get", "/tasks"),
+    ("post", "/tasks"),
     ("get", "/tasks/999"),
     ("patch", "/tasks/999"),
     ("put", "/tasks/999"),
