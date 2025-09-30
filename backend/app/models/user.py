@@ -41,6 +41,8 @@ class User(Base):
         lazy="selectin",
         single_parent=True,
     )
+    api_keys = relationship("APIKey", back_populates="user", cascade="all, delete-orphan")
+    email_tokens = relationship("EmailToken", back_populates="user", cascade="all, delete-orphan")
 
     def __repr__(self) -> str:
         return f"User(id={self.id!r}, username={self.username!r}, email={self.email!r})"
