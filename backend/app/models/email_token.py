@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Literal, Optional
 
 from app.db.session import Base
@@ -19,9 +19,9 @@ class EmailToken(Base):
     token_hash: Mapped[str] = mapped_column(String(128), unique=True, index=True)
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=False), index=True)
     consumed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=False), nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=False), default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=False), default=datetime.now(timezone.utc))
 
-    user = relationship("User", back_populates="email_tokens")
+    user = relationship("User", back_populates="email_tokens", lazy="selectin")
 
 
 Index("ix_email_tokens_user_purpose", EmailToken.user_id, EmailToken.purpose)
