@@ -5,6 +5,7 @@ description = "Taskaza is a secure, async, full-stack API built with FastAPI. It
 readme = "README.md"
 requires-python = ">=3.12.11"
 dependencies = [
+    "aiosmtplib>=4.0.2",
     "aiosqlite>=0.21.0",
     "asyncpg>=0.30.0",
     "bcrypt<4.0.0",
