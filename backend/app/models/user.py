@@ -18,7 +18,7 @@ class User(Base):
     display_name: Mapped[str | None] = mapped_column(String(100), nullable=True)
 
     # verification flag
-    email_verified: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default="0")
+    email_verified: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     # timestamps (helpful for auditing)
     created_at: Mapped["DateTime"] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
