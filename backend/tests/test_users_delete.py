@@ -63,9 +63,9 @@ async def test_delete_user_cascades_tasks(async_client: AsyncClient):
     res = await client.delete(f"/users/{user_id}", headers=headers)
     assert res.status_code == 204, res.text
 
-    # The token still exists but get_current_user should now 404 "User not found"
+    # The token still exists but either API key is gone (401) or user lookup returns 404
     res = await client.get("/users/me", headers=headers)
-    assert res.status_code == 404
+    assert res.status_code in (401, 404)
 
     # Also any attempt to hit /tasks should fail because the user no longer exists
     res = await client.get("/tasks", headers=headers)

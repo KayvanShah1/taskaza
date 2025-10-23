@@ -14,6 +14,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 load_dotenv()
 
 from app.core.dependencies import get_db
+from app.crud import apikey as crud_apikey
+from app.crud import user as crud_user
 from app.db.session import Base
 from app.main import app
 
@@ -88,9 +90,6 @@ async def async_client():
 # ---------------------------------------------------------------------
 # Auth header helpers
 # ---------------------------------------------------------------------
-def _api_key() -> str:
-    # match your verify_api_key default; fall back to 123456
-    return os.getenv("TSKZ_HTTP_API_KEY") or os.getenv("X_API_KEY") or "123456"
 
 
 @pytest_asyncio.fixture
@@ -104,8 +103,37 @@ async def auth_headers_only_token(async_client):
 
 @pytest_asyncio.fixture
 async def auth_headers(async_client):
-    # Full headers (JWT + API key) for protected routes
-    await async_client.post("/signup", json={"username": "user", "password": "pw"})
-    tok = await async_client.post("/token", data={"username": "user", "password": "pw"})
+    # Full headers (JWT + API key) for protected routes using DB-backed API keys
+    username = "user"
+    password = "pw"
+    await async_client.post("/signup", json={"username": username, "password": password})
+    tok = await async_client.post("/token", data={"username": username, "password": password})
     token = tok.json()["access_token"]
-    return {"Authorization": f"Bearer {token}", "X-API-Key": _api_key()}
+
+    # Create a valid API key for this user directly in the test DB
+    async with TestingSessionLocal() as db:
+        user = await crud_user.get_user_by_username(db, username)
+        _, display_key = await crud_apikey.create_api_key(
+            db, user_id=user.id, name="test", scopes_json=None, expires_at=None
+        )
+
+    return {"Authorization": f"Bearer {token}", "X-API-Key": display_key}
+
+
+@pytest_asyncio.fixture
+async def valid_api_key():
+    """Create and return a standalone valid API key string for auth-negative tests.
+
+    It does not return a JWT; only the API key value in Taskaza format (tsk_<prefix>_<secret>).
+    """
+    uname = "keyonly"
+    pwd = "pw"
+    # Create a user to own the key (idempotent within isolated DB per test)
+    async with TestingSessionLocal() as db:
+        user = await crud_user.get_user_by_username(db, uname)
+        if not user:
+            user = await crud_user.create_user(db, uname, pwd)
+        _, display_key = await crud_apikey.create_api_key(
+            db, user_id=user.id, name="key-only", scopes_json=None, expires_at=None
+        )
+        return display_key

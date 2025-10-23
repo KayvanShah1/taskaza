@@ -1,10 +1,7 @@
-import os
-
 import pytest
 from dotenv import load_dotenv
 
 load_dotenv()
-VALID_API_KEY = os.getenv("TSKZ_HTTP_API_KEY")
 INVALID_API_KEY = "invalid-key"
 BAD_TOKEN = "Bearer badtoken.fake.jwt"
 
@@ -24,8 +21,8 @@ def requires_body(method: str) -> bool:
 
 @pytest.mark.parametrize("method,endpoint", TASK_ENDPOINTS)
 @pytest.mark.asyncio
-async def test_missing_jwt_token(async_client, method, endpoint):
-    headers = {"X-API-Key": VALID_API_KEY}
+async def test_missing_jwt_token(async_client, valid_api_key, method, endpoint):
+    headers = {"X-API-Key": valid_api_key}
     kwargs = {"headers": headers}
     if requires_body(method):
         kwargs["json"] = {}
@@ -47,8 +44,8 @@ async def test_missing_api_key(async_client, auth_headers_only_token, method, en
 
 @pytest.mark.parametrize("method,endpoint", TASK_ENDPOINTS)
 @pytest.mark.asyncio
-async def test_invalid_jwt_token(async_client, method, endpoint):
-    headers = {"Authorization": BAD_TOKEN, "X-API-Key": VALID_API_KEY}
+async def test_invalid_jwt_token(async_client, valid_api_key, method, endpoint):
+    headers = {"Authorization": BAD_TOKEN, "X-API-Key": valid_api_key}
     kwargs = {"headers": headers}
     if requires_body(method):
         kwargs["json"] = {}
@@ -65,4 +62,5 @@ async def test_invalid_api_key(async_client, auth_headers_only_token, method, en
     if requires_body(method):
         kwargs["json"] = {}
     response = await getattr(async_client, method)(endpoint, **kwargs)
-    assert response.status_code == 403
+    # Invalid format or unknown key now returns 401
+    assert response.status_code == 401

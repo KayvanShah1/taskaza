@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = Field("HS256", description="JWT algorithm for signing tokens")
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(60 * 24 * 3, description="JWT token expiration time in minutes")
     HTTP_API_KEY: str = Field("123456", description="HTTP API key for authentication")
+    API_KEY_PREFIX: str = Field("tsk", description="Prefix for API keys")
 
     # CORS settings
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl | str] = Field(
@@ -33,6 +34,14 @@ class Settings(BaseSettings):
 
     # Database settings
     DATABASE_URL: str = Field("sqlite+aiosqlite:///./data/taskaza.db", description="Database connection URL")
+
+    # Email settings
+    FRONTEND_ORIGIN: str = Field("http://localhost:3000", description="Frontend origin for CORS and email links")
+    SMTP_HOST: str = Field("smtp.gmail.com", description="SMTP server host")
+    SMTP_PORT: int = Field(587, description="SMTP server port")
+    SMTP_USERNAME: str = Field("username", description="SMTP username")
+    SMTP_PASSWORD: str = Field("password", description="SMTP password or app password")
+    EMAIL_FROM: str = Field("Taskaza <noreply@taskaza.app>", description="Default 'from' email address")
 
     # Configuration for Pydantic settings
     model_config = SettingsConfigDict(env_prefix="TSKZ_", env_file=".env", env_file_encoding="utf-8", extra="ignore")

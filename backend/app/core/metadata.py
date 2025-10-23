@@ -26,5 +26,7 @@ license_info = {
 tags_metadata = [
     {"name": "Users", "description": "User registration and login routes"},
     {"name": "Login", "description": "Authentication and token management routes"},
+    {"name": "Auth Email", "description": "Email-based authentication routes"},
+    {"name": "API Keys", "description": "API key management routes"},
     {"name": "Tasks", "description": "CRUD operations for user tasks"},
 ]
